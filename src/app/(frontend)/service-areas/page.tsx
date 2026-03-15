@@ -1,8 +1,17 @@
 import { notFound } from 'next/navigation'
-import { getPayloadClient } from '@/lib/payload'
+import { buildMetadata } from '@/lib/metadata'
+import { getPayloadClient, getPublishedWhere } from '@/lib/payload'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading } from '@/components/ui'
 import Link from 'next/link'
+
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'Service Areas',
+    description: 'See the cities and neighbourhoods currently covered by the starter site.',
+    path: '/service-areas',
+  })
+}
 
 export default async function ServiceAreasPage() {
   if (!isFeatureEnabled('serviceAreas')) notFound()
@@ -10,7 +19,7 @@ export default async function ServiceAreasPage() {
   const payload = await getPayloadClient()
   const { docs: areas } = await payload.find({
     collection: 'service-areas',
-    where: { status: { equals: 'published' } },
+    where: getPublishedWhere(),
     sort: 'title',
   })
 

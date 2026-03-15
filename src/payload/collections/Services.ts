@@ -1,11 +1,13 @@
 import type { CollectionConfig } from 'payload'
-import { slugFromTitle } from '@/payload/hooks/slugFromTitle'
+import { slugFields } from '@/payload/fields/slugFields'
+import { seoFields } from '@/payload/fields/seoFields'
+import { publicationFields } from '@/payload/fields/publicationFields'
 
 export const Services: CollectionConfig = {
   slug: 'services',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'slug', 'updatedAt'],
+    defaultColumns: ['title', 'slug', 'status', 'updatedAt'],
   },
   fields: [
     {
@@ -13,16 +15,7 @@ export const Services: CollectionConfig = {
       type: 'text',
       required: true,
     },
-    {
-      name: 'slug',
-      type: 'text',
-      required: true,
-      unique: true,
-      hooks: { beforeValidate: [slugFromTitle] },
-      admin: {
-        position: 'sidebar',
-      },
-    },
+    ...slugFields,
     {
       name: 'summary',
       type: 'textarea',
@@ -37,25 +30,15 @@ export const Services: CollectionConfig = {
       type: 'richText',
     },
     {
-      name: 'meta',
-      type: 'group',
-      fields: [
-        { name: 'title', type: 'text' },
-        { name: 'description', type: 'textarea' },
-        { name: 'image', type: 'upload', relationTo: 'media' },
-      ],
-    },
-    {
-      name: 'status',
-      type: 'select',
-      defaultValue: 'draft',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
+      name: 'servedAreas',
+      type: 'relationship',
+      relationTo: 'service-areas',
+      hasMany: true,
       admin: {
-        position: 'sidebar',
+        description: 'Service areas this service covers',
       },
     },
+    seoFields,
+    ...publicationFields,
   ],
 }

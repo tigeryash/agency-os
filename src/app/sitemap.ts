@@ -1,15 +1,15 @@
 import type { MetadataRoute } from 'next'
-import { getPayloadClient } from '@/lib/payload'
+import { getPayloadClient, getPublishedWhere } from '@/lib/payload'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
   const payload = await getPayloadClient()
 
   const [pages, services, serviceAreas, posts] = await Promise.all([
-    payload.find({ collection: 'pages', where: { status: { equals: 'published' } }, limit: 1000 }),
-    payload.find({ collection: 'services', where: { status: { equals: 'published' } }, limit: 1000 }),
-    payload.find({ collection: 'service-areas', where: { status: { equals: 'published' } }, limit: 1000 }),
-    payload.find({ collection: 'posts', where: { status: { equals: 'published' } }, limit: 1000 }),
+    payload.find({ collection: 'pages', where: getPublishedWhere(), limit: 1000 }),
+    payload.find({ collection: 'services', where: getPublishedWhere(), limit: 1000 }),
+    payload.find({ collection: 'service-areas', where: getPublishedWhere(), limit: 1000 }),
+    payload.find({ collection: 'posts', where: getPublishedWhere(), limit: 1000 }),
   ])
 
   const entries: MetadataRoute.Sitemap = [

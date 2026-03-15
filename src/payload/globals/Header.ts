@@ -31,8 +31,24 @@ export const Header: GlobalConfig = {
       name: 'cta',
       type: 'group',
       fields: [
+        {
+          name: 'inheritFromSiteSettings',
+          type: 'checkbox',
+          defaultValue: true,
+          label: 'Use Site Settings CTA',
+        },
         { name: 'label', type: 'text' },
         { name: 'url', type: 'text' },
+        {
+          name: 'style',
+          type: 'select',
+          options: [
+            { label: 'Primary', value: 'primary' },
+            { label: 'Secondary', value: 'secondary' },
+            { label: 'Emergency', value: 'emergency' },
+          ],
+          defaultValue: 'primary',
+        },
       ],
     },
   ],

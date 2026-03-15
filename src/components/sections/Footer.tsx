@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getPayloadClient } from '@/lib/payload'
+import { getSiteSettings } from '@/lib/metadata'
 import { Container } from '@/components/ui'
 
 type NavGroup = {
@@ -9,32 +10,50 @@ type NavGroup = {
 
 type FooterData = {
   navGroups?: NavGroup[]
-  contactInfo?: { phone?: string; email?: string }
+  contactInfo?: { inheritFromSiteSettings?: boolean; phone?: string; email?: string }
   trustLinks?: { label: string; url: string }[]
   copyright?: string
 }
 
+type SiteSettingsData = {
+  businessName?: string
+  phonePrimary?: string
+  emailPrimary?: string
+}
+
 export async function Footer() {
   const payload = await getPayloadClient()
-  const footer = (await payload.findGlobal({ slug: 'footer' })) as FooterData
+  const [footer, siteSettings] = await Promise.all([
+    payload.findGlobal({ slug: 'footer' }) as Promise<FooterData>,
+    getSiteSettings() as Promise<SiteSettingsData>,
+  ])
   const navGroups = footer?.navGroups ?? []
-  const contactInfo = footer?.contactInfo
+  const shouldInheritContactInfo = footer?.contactInfo?.inheritFromSiteSettings ?? true
+  const contactInfo = shouldInheritContactInfo
+    ? {
+        phone: siteSettings.phonePrimary,
+        email: siteSettings.emailPrimary,
+      }
+    : {
+        phone: footer?.contactInfo?.phone,
+        email: footer?.contactInfo?.email,
+      }
   const trustLinks = footer?.trustLinks ?? []
-  const copyright = footer?.copyright
+  const copyright = footer?.copyright ?? (siteSettings.businessName ? `© ${new Date().getFullYear()} ${siteSettings.businessName}. All rights reserved.` : undefined)
 
   return (
     <footer className="bg-surface-inverse text-foreground-inverse py-section-sm">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {navGroups.map((group, i) => (
-            <div key={i}>
+          {navGroups.map((group) => (
+            <div key={group.title ?? group.items?.[0]?.url ?? 'nav-group'}>
               {group.title && (
                 <h3 className="font-heading font-semibold mb-3">{group.title}</h3>
               )}
               {group.items && (
                 <ul className="space-y-2">
-                  {group.items.map((item, j) => (
-                    <li key={j}>
+                  {group.items.map((item) => (
+                    <li key={item.url}>
                       <Link
                         href={item.url}
                         className="text-foreground-inverse/70 hover:text-foreground-inverse transition-colors text-small"
@@ -73,8 +92,8 @@ export async function Footer() {
             {copyright && <p>{copyright}</p>}
             {trustLinks.length > 0 && (
               <div className="flex gap-4">
-                {trustLinks.map((link, i) => (
-                  <Link key={i} href={link.url} className="hover:text-foreground-inverse transition-colors">
+                {trustLinks.map((link) => (
+                  <Link key={link.url} href={link.url} className="hover:text-foreground-inverse transition-colors">
                     {link.label}
                   </Link>
                 ))}

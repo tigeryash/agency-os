@@ -4,7 +4,7 @@ export const Reviews: CollectionConfig = {
   slug: 'reviews',
   admin: {
     useAsTitle: 'author',
-    defaultColumns: ['author', 'rating', 'service', 'updatedAt'],
+    defaultColumns: ['author', 'rating', 'service', 'status', 'updatedAt'],
   },
   fields: [
     {
@@ -48,6 +48,7 @@ export const Reviews: CollectionConfig = {
       options: [
         { label: 'Draft', value: 'draft' },
         { label: 'Published', value: 'published' },
+        { label: 'Archived', value: 'archived' },
       ],
       admin: {
         position: 'sidebar',

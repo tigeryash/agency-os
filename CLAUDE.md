@@ -100,4 +100,5 @@ Read these only when needed for the current task.
 - `planning/16-marketing-and-social.md` — marketing automation framework
 - `planning/17-starter-implementation-spec.md` — technical spec for the Next.js and Payload starter
 - `planning/19-starter-skeleton.md` — approved repo skeleton and config boundaries
+- `planning/20-shared-business-schema.md` — shared field groups, entity boundaries, status conventions, and reuse rules
 - `planning/agents/` — per-agent specs

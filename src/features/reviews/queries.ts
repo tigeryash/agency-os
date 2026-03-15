@@ -1,4 +1,4 @@
-import { getPayloadClient } from '@/lib/payload'
+import { getPayloadClient, getPublishedWhere } from '@/lib/payload'
 
 export async function getFeaturedReviews(limit = 6) {
   const payload = await getPayloadClient()
@@ -6,7 +6,7 @@ export async function getFeaturedReviews(limit = 6) {
     collection: 'reviews',
     where: {
       and: [
-        { status: { equals: 'published' } },
+        getPublishedWhere(),
         { featured: { equals: true } },
       ],
     },
@@ -21,7 +21,7 @@ export async function getReviewsForService(serviceId: string, limit = 10) {
     collection: 'reviews',
     where: {
       and: [
-        { status: { equals: 'published' } },
+        getPublishedWhere(),
         { service: { equals: serviceId } },
       ],
     },

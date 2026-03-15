@@ -55,10 +55,17 @@ export async function submitContactForm(data: SubmitContactFormInput): Promise<F
   try {
     const payload = await getPayloadClient()
     await payload.create({
-      collection: 'contact-submissions',
+      collection: 'leads',
       data: {
-        ...result.data,
-        source: data.source ?? 'contact-page',
+        contactName: result.data.name,
+        contactEmail: result.data.email,
+        contactPhone: result.data.phone,
+        serviceCategory: result.data.service,
+        inquiryMessage: result.data.message,
+        contactPath: 'web_form',
+        source: 'inbound_form',
+        duplicateCheckStatus: 'new',
+        outreachStatus: 'notContacted',
       },
     })
   } catch (error) {

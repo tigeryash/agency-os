@@ -4,6 +4,14 @@ import { buildMetadata } from '@/lib/metadata'
 import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { BlockRenderer } from '@/components/blocks'
 
+type MetaGroup = {
+  title?: string
+  description?: string
+  image?: string | { url?: string | null } | null
+  noIndex?: boolean
+  canonicalUrl?: string
+}
+
 async function getHomePage() {
   const payload = await getPayloadClient()
   const result = await payload.find({
@@ -16,10 +24,14 @@ async function getHomePage() {
 
 export async function generateMetadata() {
   const page = await getHomePage()
+  const meta = page?.meta as MetaGroup | undefined
 
   return buildMetadata({
-    title: (page?.meta as { title?: string } | undefined)?.title ?? page?.title,
-    description: (page?.meta as { description?: string } | undefined)?.description,
+    title: meta?.title ?? page?.title,
+    description: meta?.description,
+    image: meta?.image,
+    canonicalUrl: meta?.canonicalUrl,
+    noIndex: meta?.noIndex,
     path: '/',
   })
 }

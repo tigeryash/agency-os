@@ -1,12 +1,21 @@
-import { getPayloadClient } from '@/lib/payload'
+import { buildMetadata } from '@/lib/metadata'
+import { getPayloadClient, getPublishedWhere } from '@/lib/payload'
 import { Container, Section, Heading } from '@/components/ui'
 import Link from 'next/link'
+
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'Services',
+    description: 'Browse the home services currently offered across the Greater Toronto Area.',
+    path: '/services',
+  })
+}
 
 export default async function ServicesPage() {
   const payload = await getPayloadClient()
   const { docs: services } = await payload.find({
     collection: 'services',
-    where: { status: { equals: 'published' } },
+    where: getPublishedWhere(),
     sort: 'title',
   })
 

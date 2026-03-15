@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "migrate:contact-submissions": "PAYLOAD_CONFIG_PATH=./payload.config.ts bun run src/lib/migrateLegacyContactSubmissions.ts",
     "seed": "PAYLOAD_CONFIG_PATH=./payload.config.ts bun run src/lib/seed.ts",
     "generate:types": "payload generate:types"
   },

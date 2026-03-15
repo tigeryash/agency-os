@@ -24,6 +24,8 @@ Current verified baseline:
 4. lead capture now stores real submissions instead of returning a fake success state
 5. public slug routes enforce published-only content
 6. tier-gated smoke tests, typecheck, lint, and baseline e2e now run successfully in the current repo
+7. shared business schema has been defined in planning
+8. Payload collections and globals have been audited against that schema in planning
 
 Planning is still active for unresolved business and architecture decisions, but do not assume the codebase is unimplemented.
 
@@ -58,7 +60,7 @@ Reconcile planning docs with the implemented starter, then choose the next concr
 Recommended order:
 
 1. document the implemented baseline that now exists
-2. decide whether the next step is shared business schema, lead-delivery notifications, or deployment / CI hardening
+2. implement the highest-priority schema reconciliation actions
 3. keep business-level unresolved decisions separate from code-level cleanup
 
 ## Additional Global Constraints To Apply

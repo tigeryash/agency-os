@@ -25,6 +25,12 @@ export const Footer: GlobalConfig = {
       name: 'contactInfo',
       type: 'group',
       fields: [
+        {
+          name: 'inheritFromSiteSettings',
+          type: 'checkbox',
+          defaultValue: true,
+          label: 'Use Site Settings Contact Info',
+        },
         { name: 'phone', type: 'text' },
         { name: 'email', type: 'email' },
       ],

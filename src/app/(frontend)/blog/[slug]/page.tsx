@@ -1,11 +1,19 @@
 import { notFound } from 'next/navigation'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+import { buildMetadata } from '@/lib/metadata'
 import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading, RichText } from '@/components/ui'
 import type { Metadata } from 'next'
 
 type Args = { params: Promise<{ slug: string }> }
+type MetaGroup = {
+  title?: string
+  description?: string
+  image?: string | { url?: string | null } | null
+  noIndex?: boolean
+  canonicalUrl?: string
+}
 
 async function getPost(slug: string) {
   const payload = await getPayloadClient()
@@ -22,11 +30,15 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const post = await getPost(slug)
   if (!post) return {}
 
-  const meta = post.meta as { title?: string; description?: string } | undefined
-  return {
+  const meta = post.meta as MetaGroup | undefined
+  return buildMetadata({
     title: meta?.title ?? post.title,
     description: meta?.description ?? (post.summary as string | undefined),
-  }
+    image: meta?.image ?? post.featuredImage,
+    canonicalUrl: meta?.canonicalUrl,
+    noIndex: meta?.noIndex,
+    path: `/blog/${slug}`,
+  })
 }
 
 export default async function PostPage({ params }: Args) {

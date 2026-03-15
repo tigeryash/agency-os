@@ -11,6 +11,11 @@ function formatSlug(val: string): string {
 }
 
 export const slugFromTitle: FieldHook = ({ data, operation, value }) => {
+  // Respect slugLock: if locked and slug already has a value, only format it
+  if (data?.slugLock && value) {
+    return typeof value === 'string' ? formatSlug(value) : value
+  }
+
   if (operation === 'create' || !value) {
     const title = data?.title
     if (typeof title === 'string' && title.length > 0) {

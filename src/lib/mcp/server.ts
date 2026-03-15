@@ -66,7 +66,7 @@ export function createMcpServer() {
   // --- Read Tools ---
 
   server.tool('list-pages', 'List all pages with their slugs and titles', {
-    status: z.string().optional().describe('Filter by status (draft or published)'),
+    status: z.string().optional().describe('Filter by status (draft, published, or archived)'),
   }, async ({ status }) => {
     const payload = await getClient()
     const { docs } = await payload.find({ collection: 'pages', where: buildWhere(status), limit: 100 })
@@ -148,7 +148,7 @@ export function createMcpServer() {
   server.tool('create-service', 'Create a new service', {
     title: z.string().describe('Service title'),
     summary: z.string().optional().describe('Short description'),
-    status: z.string().optional().describe('draft or published (default: draft)'),
+    status: z.string().optional().describe('draft, published, or archived (default: draft)'),
   }, async ({ title, summary, status }) => {
     const payload = await getClient()
     const doc = await payload.create({
@@ -161,7 +161,7 @@ export function createMcpServer() {
   server.tool('create-service-area', 'Create a new service area', {
     title: z.string().describe('Area name (e.g., "Scarborough")'),
     description: z.string().optional().describe('Short description of coverage'),
-    status: z.string().optional().describe('draft or published (default: draft)'),
+    status: z.string().optional().describe('draft, published, or archived (default: draft)'),
   }, async ({ title, description, status }) => {
     const payload = await getClient()
     const doc = await payload.create({
@@ -174,7 +174,7 @@ export function createMcpServer() {
   server.tool('create-post', 'Create a new blog post', {
     title: z.string().describe('Post title'),
     summary: z.string().optional().describe('Short summary'),
-    status: z.string().optional().describe('draft or published (default: draft)'),
+    status: z.string().optional().describe('draft, published, or archived (default: draft)'),
   }, async ({ title, summary, status }) => {
     const payload = await getClient()
     const doc = await payload.create({
@@ -200,7 +200,7 @@ export function createMcpServer() {
   server.tool('publish-content', 'Publish or unpublish a document in any collection', {
     collection: z.string().describe('Collection slug (pages, services, service-areas, posts, reviews)'),
     id: z.string().describe('Document ID'),
-    status: z.string().describe('published or draft'),
+    status: z.string().describe('published, draft, or archived'),
   }, async ({ collection, id, status }) => {
     if (!isPublishableCollection(collection)) {
       return { content: [{ type: 'text', text: `Invalid collection. Must be one of: ${publishableCollections.join(', ')}` }] }

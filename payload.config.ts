@@ -11,6 +11,7 @@ import { Reviews } from '@/payload/collections/Reviews'
 import { Posts } from '@/payload/collections/Posts'
 import { Media } from '@/payload/collections/Media'
 import { ContactSubmissions } from '@/payload/collections/ContactSubmissions'
+import { Leads } from '@/payload/collections/Leads'
 import { Users } from '@/payload/collections/Users'
 
 import { SiteSettings } from '@/payload/globals/SiteSettings'
@@ -25,7 +26,7 @@ export default buildConfig({
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URI || '' },
   }),
-  collections: [Pages, Services, ServiceAreas, Reviews, Posts, Media, ContactSubmissions, Users],
+  collections: [Pages, Services, ServiceAreas, Reviews, Posts, Media, ContactSubmissions, Leads, Users],
   admin: {
     user: Users.slug,
     importMap: {

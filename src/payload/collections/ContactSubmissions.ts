@@ -5,6 +5,7 @@ import { isAuthenticated } from '@/payload/access/isAuthenticated'
 export const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
   admin: {
+    hidden: true,
     useAsTitle: 'name',
     defaultColumns: ['name', 'email', 'source', 'createdAt'],
     group: 'Internal',
@@ -12,8 +13,8 @@ export const ContactSubmissions: CollectionConfig = {
   access: {
     create: () => false,
     read: isAuthenticated,
-    update: isAuthenticated,
-    delete: isAuthenticated,
+    update: () => false,
+    delete: () => false,
   },
   fields: [
     {

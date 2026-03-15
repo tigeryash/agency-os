@@ -1,8 +1,17 @@
 import { notFound } from 'next/navigation'
-import { getPayloadClient } from '@/lib/payload'
+import { buildMetadata } from '@/lib/metadata'
+import { getPayloadClient, getPublishedWhere } from '@/lib/payload'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading } from '@/components/ui'
 import Link from 'next/link'
+
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'Blog',
+    description: 'Read posts, updates, and local service advice from the starter site.',
+    path: '/blog',
+  })
+}
 
 export default async function BlogPage() {
   if (!isFeatureEnabled('blog')) notFound()
@@ -10,7 +19,7 @@ export default async function BlogPage() {
   const payload = await getPayloadClient()
   const { docs: posts } = await payload.find({
     collection: 'posts',
-    where: { status: { equals: 'published' } },
+    where: getPublishedWhere(),
     sort: '-publishedAt',
   })
 

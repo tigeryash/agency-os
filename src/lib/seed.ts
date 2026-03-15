@@ -48,12 +48,12 @@ async function seed() {
 
   // Create service areas
   const areas = [
-    { title: 'Toronto', description: 'Serving downtown Toronto and surrounding neighborhoods.' },
-    { title: 'Mississauga', description: 'Full-service coverage across Mississauga.' },
-    { title: 'Brampton', description: 'Reliable home services throughout Brampton.' },
-    { title: 'Markham', description: 'Professional services in Markham and Unionville.' },
-    { title: 'Vaughan', description: 'Trusted services in Vaughan and Woodbridge.' },
-    { title: 'Oakville', description: 'Quality home services in Oakville and Burlington.' },
+    { title: 'Toronto', description: 'Serving downtown Toronto and surrounding neighborhoods.', areaType: 'city', geoModifier: 'in Toronto' },
+    { title: 'Mississauga', description: 'Full-service coverage across Mississauga.', areaType: 'city', geoModifier: 'in Mississauga' },
+    { title: 'Brampton', description: 'Reliable home services throughout Brampton.', areaType: 'city', geoModifier: 'in Brampton' },
+    { title: 'Markham', description: 'Professional services in Markham and Unionville.', areaType: 'city', geoModifier: 'in Markham' },
+    { title: 'Vaughan', description: 'Trusted services in Vaughan and Woodbridge.', areaType: 'city', geoModifier: 'in Vaughan' },
+    { title: 'Oakville', description: 'Quality home services in Oakville and Burlington.', areaType: 'city', geoModifier: 'in Oakville' },
   ]
 
   for (const area of areas) {
@@ -144,17 +144,27 @@ async function seed() {
     slug: 'site-settings',
     data: {
       businessName: 'Agency Starter',
-      phone: '(416) 555-0100',
-      email: 'hello@agency-starter.com',
+      tagline: 'Professional Home Services in the GTA',
+      phonePrimary: '(416) 555-0100',
+      emailPrimary: 'hello@agency-starter.com',
       address: {
         street: '123 Main St',
         city: 'Toronto',
         province: 'Ontario',
         postalCode: 'M5V 1A1',
+        country: 'CA',
       },
       primaryCTA: {
         label: 'Get a Free Estimate',
         url: '/contact',
+        style: 'primary',
+      },
+      contactFormRecipient: 'hello@agency-starter.com',
+      hoursSummary: 'Mon–Fri 8am–6pm',
+      emergencyAvailable: false,
+      defaultMeta: {
+        title: 'Agency Starter',
+        description: 'Professional home services in the Greater Toronto Area.',
       },
     },
   })
@@ -168,7 +178,7 @@ async function seed() {
         { label: 'Blog', url: '/blog' },
         { label: 'Contact', url: '/contact' },
       ],
-      cta: { label: 'Free Estimate', url: '/contact' },
+      cta: { inheritFromSiteSettings: true },
     },
   })
 
@@ -195,8 +205,7 @@ async function seed() {
         },
       ],
       contactInfo: {
-        phone: '(416) 555-0100',
-        email: 'hello@agency-starter.com',
+        inheritFromSiteSettings: true,
       },
       trustLinks: [
         { label: 'Privacy Policy', url: '/privacy' },

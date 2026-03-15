@@ -1,11 +1,13 @@
 import type { CollectionConfig } from 'payload'
-import { slugFromTitle } from '@/payload/hooks/slugFromTitle'
+import { slugFields } from '@/payload/fields/slugFields'
+import { seoFields } from '@/payload/fields/seoFields'
+import { publicationFields } from '@/payload/fields/publicationFields'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'slug', 'publishedAt', 'updatedAt'],
+    defaultColumns: ['title', 'slug', 'publishedAt', 'status', 'updatedAt'],
   },
   fields: [
     {
@@ -13,16 +15,7 @@ export const Posts: CollectionConfig = {
       type: 'text',
       required: true,
     },
-    {
-      name: 'slug',
-      type: 'text',
-      required: true,
-      unique: true,
-      hooks: { beforeValidate: [slugFromTitle] },
-      admin: {
-        position: 'sidebar',
-      },
-    },
+    ...slugFields,
     {
       name: 'summary',
       type: 'textarea',
@@ -36,33 +29,7 @@ export const Posts: CollectionConfig = {
       name: 'content',
       type: 'richText',
     },
-    {
-      name: 'meta',
-      type: 'group',
-      fields: [
-        { name: 'title', type: 'text' },
-        { name: 'description', type: 'textarea' },
-        { name: 'image', type: 'upload', relationTo: 'media' },
-      ],
-    },
-    {
-      name: 'publishedAt',
-      type: 'date',
-      admin: {
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'status',
-      type: 'select',
-      defaultValue: 'draft',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
-      admin: {
-        position: 'sidebar',
-      },
-    },
+    seoFields,
+    ...publicationFields,
   ],
 }
