@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload'
-import { Container, Section, Heading } from '@/components/ui'
+import { Container, Section, Heading, RichText } from '@/components/ui'
 import type { Metadata } from 'next'
 
 type Args = { params: Promise<{ slug: string }> }
@@ -37,6 +37,9 @@ export default async function PostPage({ params }: Args) {
       <Section>
         <Container size="narrow">
           <Heading level={1}>{post.title}</Heading>
+          {post.content && (
+            <RichText data={post.content as any} className="mt-8" />
+          )}
         </Container>
       </Section>
     </main>

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { slugFromTitle } from '@/payload/hooks/slugFromTitle'
 
 export const ServiceAreas: CollectionConfig = {
   slug: 'service-areas',
@@ -17,6 +18,7 @@ export const ServiceAreas: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
+      hooks: { beforeValidate: [slugFromTitle] },
       admin: {
         position: 'sidebar',
       },

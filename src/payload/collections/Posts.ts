@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { slugFromTitle } from '@/payload/hooks/slugFromTitle'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -17,6 +18,7 @@ export const Posts: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
+      hooks: { beforeValidate: [slugFromTitle] },
       admin: {
         position: 'sidebar',
       },

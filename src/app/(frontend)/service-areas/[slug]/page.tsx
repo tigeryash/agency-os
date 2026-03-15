@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload'
-import { Container, Section, Heading } from '@/components/ui'
+import { Container, Section, Heading, RichText } from '@/components/ui'
 import type { Metadata } from 'next'
 
 type Args = { params: Promise<{ slug: string }> }
@@ -39,6 +39,9 @@ export default async function ServiceAreaPage({ params }: Args) {
           <Heading level={1}>{area.title}</Heading>
           {area.description && (
             <p className="mt-4 text-foreground-muted">{area.description as string}</p>
+          )}
+          {area.content && (
+            <RichText data={area.content as any} className="mt-8" />
           )}
         </Container>
       </Section>

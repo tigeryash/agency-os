@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { slugFromTitle } from '@/payload/hooks/slugFromTitle'
 import {
   HeroBlock,
   CtaBandBlock,
@@ -33,6 +34,7 @@ export const Pages: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
+      hooks: { beforeValidate: [slugFromTitle] },
       admin: {
         position: 'sidebar',
       },
