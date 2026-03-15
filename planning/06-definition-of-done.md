@@ -25,6 +25,9 @@ This phase is complete when:
 - core reusable blocks exist
 - at least one niche-oriented template family exists
 - deployment path is defined
+- lead-capture success states represent real persistence or delivery, not placeholders
+- public routes do not expose draft CMS content through direct slug access
+- the baseline validation commands actually run in the repo as configured
 
 ## 3. Sales Workflow Done
 
@@ -48,6 +51,7 @@ This phase is complete when:
 - QA checklist exists
 - launch checklist exists
 - handoff and support process exists
+- feature-gated behavior is verified for both enabled and disabled paths where relevant
 
 ## 5. Agent Workflow Done
 
@@ -82,3 +86,5 @@ This phase is complete when:
 - starter stack can generate a delivery-ready project
 - QA and launch review process exists
 - a basic agency site and demo assets exist
+- lead capture stores or delivers real submissions safely
+- lint, typecheck, and critical e2e flows pass without manual config repair

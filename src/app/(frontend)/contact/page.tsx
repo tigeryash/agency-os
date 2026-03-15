@@ -1,5 +1,14 @@
+import { buildMetadata } from '@/lib/metadata'
 import { Container, Section, Heading } from '@/components/ui'
-import { ContactForm } from './ContactForm'
+import { ContactForm } from '@/features/contact/ContactForm'
+
+export async function generateMetadata() {
+  return buildMetadata({
+    title: 'Contact',
+    description: 'Request a free estimate for your next home-services project.',
+    path: '/contact',
+  })
+}
 
 export default function ContactPage() {
   return (
@@ -11,7 +20,7 @@ export default function ContactPage() {
             Get in touch for a free estimate.
           </p>
           <div className="mt-8">
-            <ContactForm />
+            <ContactForm source="contact-page" />
           </div>
         </Container>
       </Section>

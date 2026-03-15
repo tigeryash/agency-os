@@ -60,12 +60,29 @@ Minimum quality expectations:
 3. major page flows and lead-capture paths should have integration or end-to-end coverage
 4. the starter should support regression testing for common blocks and key routes
 
+## Runtime Safety Rules
+
+1. Do not show a success state for lead capture unless the submission was durably stored or explicitly delivered.
+2. Reusable lead-capture blocks must use the same working submission path as the primary contact route rather than a mock or placeholder form.
+3. Public-facing detail routes must enforce the same publication-state rules as listing routes.
+4. Feature-gated routes and blocks must be tested against the active tier configuration instead of assuming all features are enabled.
+5. Config files required for app startup and validation, including lint, Tailwind, and Playwright, must run in the current module system without manual patching.
+
+## Agent Implementation Guardrails
+
+1. Agent-generated code is not done when the editor is quiet; required validation commands still need to run.
+2. Any placeholder behavior that could mislead a real user, especially fake form success states, must be treated as a release blocker.
+3. Shared behavior should live behind one reusable path when the same user flow appears in multiple places.
+4. If a route is controlled by tier flags, tests must assert the enabled and disabled behavior explicitly.
+5. If public content has draft and published states, query helpers should centralize that rule instead of repeating ad hoc slug lookups.
+
 Suggested stack:
 
 1. unit tests for utilities and business logic
 2. Playwright for important user flows
 3. linting and typechecking as required baseline checks
 4. React Doctor after major React changes
+5. startup validation for framework config files that can break app boot before route tests run
 
 ## Clean Code Rules
 
@@ -85,6 +102,8 @@ Every meaningful implementation should be reviewed against:
 3. reusability for future client projects
 4. test coverage of risky logic
 5. visual quality and consistency
+6. truthfulness of user-facing states and outcomes
+7. consistency between feature flags, content status rules, and route behavior
 
 ## Skills And Tooling Recommendations
 
@@ -113,3 +132,4 @@ The starter platform is not ready if it cannot be:
 2. extended for a new home-services client without messy rewrites
 3. tested on core flows
 4. reviewed for architecture and security with low ambiguity
+5. validated with working lint, typecheck, and route-level smoke tests in a fresh environment

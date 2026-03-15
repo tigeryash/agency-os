@@ -37,14 +37,25 @@ const tierFeatures: Record<Tier, Set<FeatureKey>> = {
   ]),
 }
 
-function getCurrentTier(): Tier {
-  const tier = process.env.NEXT_PUBLIC_TIER as Tier | undefined
-  if (tier && tier in tierFeatures) return tier
+function isTier(tier: string): tier is Tier {
+  return Object.prototype.hasOwnProperty.call(tierFeatures, tier)
+}
+
+export function resolveTier(tier: string | undefined): Tier {
+  if (tier && isTier(tier)) return tier
   return 'launch'
 }
 
+function getCurrentTier(): Tier {
+  return resolveTier(process.env.NEXT_PUBLIC_TIER)
+}
+
+export function isFeatureEnabledForTier(tier: Tier, feature: FeatureKey): boolean {
+  return tierFeatures[tier].has(feature)
+}
+
 export function isFeatureEnabled(feature: FeatureKey): boolean {
-  return tierFeatures[getCurrentTier()].has(feature)
+  return isFeatureEnabledForTier(getCurrentTier(), feature)
 }
 
 export function getCurrentTierName(): Tier {

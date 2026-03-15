@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { getPayloadClient } from '@/lib/payload'
+import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading, RichText } from '@/components/ui'
 import type { Metadata } from 'next'
@@ -10,7 +11,7 @@ async function getServiceArea(slug: string) {
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: 'service-areas',
-    where: { slug: { equals: slug } },
+    where: getPublishedSlugWhere(slug),
     limit: 1,
   })
   return result.docs[0] ?? null
@@ -43,7 +44,7 @@ export default async function ServiceAreaPage({ params }: Args) {
             <p className="mt-4 text-foreground-muted">{area.description as string}</p>
           )}
           {area.content && (
-            <RichText data={area.content as any} className="mt-8" />
+            <RichText data={area.content as SerializedEditorState} className="mt-8" />
           )}
         </Container>
       </Section>

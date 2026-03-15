@@ -3,13 +3,19 @@
 import { useState } from 'react'
 import { useForm } from '@tanstack/react-form'
 import { Turnstile } from '@marsidev/react-turnstile'
-import { contactSchema } from '@/lib/schemas/contact'
-import { submitContactForm, type FormState } from './action'
+
 import { Button } from '@/components/ui'
+import { contactSchema } from '@/lib/schemas/contact'
+
+import { submitContactForm, type FormState } from './action'
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 
-export function ContactForm() {
+type ContactFormProps = {
+  source?: string
+}
+
+export function ContactForm({ source = 'contact-page' }: ContactFormProps) {
   const [formState, setFormState] = useState<FormState | null>(null)
   const [turnstileToken, setTurnstileToken] = useState('')
 
@@ -25,6 +31,7 @@ export function ContactForm() {
     onSubmit: async ({ value }) => {
       const result = await submitContactForm({
         ...value,
+        source,
         turnstileToken,
       })
       setFormState(result)
@@ -41,9 +48,9 @@ export function ContactForm() {
 
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
+      onSubmit={(event) => {
+        event.preventDefault()
+        event.stopPropagation()
         form.handleSubmit()
       }}
       className="space-y-4"
@@ -54,7 +61,6 @@ export function ContactForm() {
         </div>
       )}
 
-      {/* Honeypot — hidden from real users */}
       <div className="hidden" aria-hidden="true">
         <form.Field name="honeypot">
           {(field) => (
@@ -62,13 +68,13 @@ export function ContactForm() {
               tabIndex={-1}
               autoComplete="off"
               value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
+              onChange={(event) => field.handleChange(event.target.value)}
             />
           )}
         </form.Field>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <form.Field
           name="name"
           validators={{ onChange: contactSchema.shape.name }}
@@ -78,10 +84,10 @@ export function ContactForm() {
               <input
                 type="text"
                 placeholder="Name"
-                className="rounded-brand border px-4 py-3 w-full"
+                className="w-full rounded-brand border px-4 py-3"
                 value={field.state.value}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
+                onChange={(event) => field.handleChange(event.target.value)}
               />
               {field.state.meta.errors.length > 0 && (
                 <p className="mt-1 text-small text-red-600">
@@ -103,10 +109,10 @@ export function ContactForm() {
               <input
                 type="email"
                 placeholder="Email"
-                className="rounded-brand border px-4 py-3 w-full"
+                className="w-full rounded-brand border px-4 py-3"
                 value={field.state.value}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
+                onChange={(event) => field.handleChange(event.target.value)}
               />
               {field.state.meta.errors.length > 0 && (
                 <p className="mt-1 text-small text-red-600">
@@ -125,23 +131,24 @@ export function ContactForm() {
           <input
             type="tel"
             placeholder="Phone"
-            className="rounded-brand border px-4 py-3 w-full"
+            className="w-full rounded-brand border px-4 py-3"
             value={field.state.value}
             onBlur={field.handleBlur}
-            onChange={(e) => field.handleChange(e.target.value)}
+            onChange={(event) => field.handleChange(event.target.value)}
           />
         )}
       </form.Field>
 
       <form.Field name="service">
         {(field) => (
-          <select
-            className="rounded-brand border px-4 py-3 w-full"
+          <input
+            type="text"
+            placeholder="Requested service"
+            className="w-full rounded-brand border px-4 py-3"
             value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-          >
-            <option value="">Select a service...</option>
-          </select>
+            onBlur={field.handleBlur}
+            onChange={(event) => field.handleChange(event.target.value)}
+          />
         )}
       </form.Field>
 
@@ -154,10 +161,10 @@ export function ContactForm() {
             <textarea
               placeholder="How can we help?"
               rows={4}
-              className="rounded-brand border px-4 py-3 w-full"
+              className="w-full rounded-brand border px-4 py-3"
               value={field.state.value}
               onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
+              onChange={(event) => field.handleChange(event.target.value)}
             />
             {field.state.meta.errors.length > 0 && (
               <p className="mt-1 text-small text-red-600">

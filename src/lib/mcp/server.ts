@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
-import { getPayload, type Payload } from 'payload'
+import { getPayload, type Payload, type Where } from 'payload'
 import config from '@payload-config'
 
 let payloadClient: Payload | null = null
@@ -15,6 +15,20 @@ async function getClient(): Promise<Payload> {
 function buildWhere(status?: string) {
   if (!status) return undefined
   return { status: { equals: status } }
+}
+
+const globalSlugs = ['site-settings', 'header', 'footer'] as const
+type ManagedGlobalSlug = typeof globalSlugs[number]
+
+function isManagedGlobalSlug(slug: string): slug is ManagedGlobalSlug {
+  return globalSlugs.includes(slug as ManagedGlobalSlug)
+}
+
+const publishableCollections = ['pages', 'services', 'service-areas', 'posts', 'reviews'] as const
+type PublishableCollection = typeof publishableCollections[number]
+
+function isPublishableCollection(collection: string): collection is PublishableCollection {
+  return publishableCollections.includes(collection as PublishableCollection)
 }
 
 export function createMcpServer() {
@@ -101,7 +115,7 @@ export function createMcpServer() {
     limit: z.number().optional().describe('Max reviews to return (default 20)'),
   }, async ({ featured, limit }) => {
     const payload = await getClient()
-    const conditions: Record<string, any>[] = [{ status: { equals: 'published' } }]
+    const conditions: Where[] = [{ status: { equals: 'published' } }]
     if (featured) conditions.push({ featured: { equals: true } })
     const { docs } = await payload.find({
       collection: 'reviews',
@@ -174,12 +188,12 @@ export function createMcpServer() {
     globalSlug: z.string().describe('Global slug: site-settings, header, or footer'),
     data: z.string().describe('JSON string of fields to update'),
   }, async ({ globalSlug, data }) => {
-    if (!['site-settings', 'header', 'footer'].includes(globalSlug)) {
+    if (!isManagedGlobalSlug(globalSlug)) {
       return { content: [{ type: 'text', text: 'Invalid global slug' }] }
     }
     const payload = await getClient()
     const parsed = JSON.parse(data)
-    await payload.updateGlobal({ slug: globalSlug as any, data: parsed })
+    await payload.updateGlobal({ slug: globalSlug, data: parsed })
     return { content: [{ type: 'text', text: `Updated global "${globalSlug}"` }] }
   })
 
@@ -188,12 +202,11 @@ export function createMcpServer() {
     id: z.string().describe('Document ID'),
     status: z.string().describe('published or draft'),
   }, async ({ collection, id, status }) => {
-    const validCollections = ['pages', 'services', 'service-areas', 'posts', 'reviews']
-    if (!validCollections.includes(collection)) {
-      return { content: [{ type: 'text', text: `Invalid collection. Must be one of: ${validCollections.join(', ')}` }] }
+    if (!isPublishableCollection(collection)) {
+      return { content: [{ type: 'text', text: `Invalid collection. Must be one of: ${publishableCollections.join(', ')}` }] }
     }
     const payload = await getClient()
-    await payload.update({ collection: collection as any, id, data: { status } })
+    await payload.update({ collection, id, data: { status } })
     return { content: [{ type: 'text', text: `Set ${collection}/${id} to "${status}"` }] }
   })
 

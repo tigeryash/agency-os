@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test'
 
+import { isFeatureEnabledForTier, resolveTier } from '../src/lib/tiers'
+
+const tier = resolveTier(process.env.NEXT_PUBLIC_TIER)
+
 test('home page loads', async ({ page }) => {
   await page.goto('/')
   await expect(page).toHaveTitle(/.*/)
@@ -17,11 +21,23 @@ test('services page loads', async ({ page }) => {
 })
 
 test('service areas page loads', async ({ page }) => {
-  await page.goto('/service-areas')
-  await expect(page.locator('h1')).toContainText('Service Areas')
+  const response = await page.goto('/service-areas')
+  if (isFeatureEnabledForTier(tier, 'serviceAreas')) {
+    await expect(page.locator('h1')).toContainText('Service Areas')
+    expect(response?.status()).toBe(200)
+    return
+  }
+
+  expect(response?.status()).toBe(404)
 })
 
 test('blog page loads', async ({ page }) => {
-  await page.goto('/blog')
-  await expect(page.locator('h1')).toContainText('Blog')
+  const response = await page.goto('/blog')
+  if (isFeatureEnabledForTier(tier, 'blog')) {
+    await expect(page.locator('h1')).toContainText('Blog')
+    expect(response?.status()).toBe(200)
+    return
+  }
+
+  expect(response?.status()).toBe(404)
 })

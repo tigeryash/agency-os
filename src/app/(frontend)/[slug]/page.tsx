@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getPayloadClient } from '@/lib/payload'
+import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { BlockRenderer } from '@/components/blocks'
 import type { Metadata } from 'next'
 
@@ -9,7 +9,7 @@ async function getPage(slug: string) {
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: 'pages',
-    where: { slug: { equals: slug } },
+    where: getPublishedSlugWhere(slug),
     limit: 1,
   })
   return result.docs[0] ?? null

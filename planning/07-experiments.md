@@ -33,3 +33,10 @@ Use this file to track controlled experiments. This is the safe place for testin
 3. discovery summary structure for fewer missed requirements
 4. qualification scoring rubric quality
 5. QA checklist false-positive reduction
+
+## Suggested Engineering Workflow Experiments
+
+1. agent implementation prompt with mandatory verification gates for lint, typecheck, unit tests, and e2e smoke tests
+2. review checklist that explicitly checks fake success states, draft-content exposure, and tier-gated route behavior
+3. shared-query helper pattern for published-only public content lookups versus per-route inline queries
+4. startup-config checklist for Tailwind, ESLint, and Playwright so toolchain failures are caught before feature work is considered done

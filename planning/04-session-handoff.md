@@ -12,9 +12,20 @@ For a fresh session:
 
 ## Current State
 
-This project is still in planning and architecture mode.
+This project is no longer planning-only.
 
-The business direction is becoming clear, but the system has not been implemented yet.
+The starter repository exists and implementation is underway in the Next.js plus Payload codebase.
+
+Current verified baseline:
+
+1. monolithic starter repo structure is in place
+2. core frontend and Payload route boundaries exist
+3. initial collections, globals, blocks, and supporting utilities exist
+4. lead capture now stores real submissions instead of returning a fake success state
+5. public slug routes enforce published-only content
+6. tier-gated smoke tests, typecheck, lint, and baseline e2e now run successfully in the current repo
+
+Planning is still active for unresolved business and architecture decisions, but do not assume the codebase is unimplemented.
 
 ## Locked Decisions
 
@@ -38,11 +49,17 @@ The business direction is becoming clear, but the system has not been implemente
 
 ## Recommended Next Conversation Prompt
 
-"Review the `agency-os-plan` folder and help me continue from the current plan. Confirm the locked decisions, identify the next unresolved decision, and then help me implement only that step."
+"Review the current repo and planning docs together. Confirm the locked decisions, summarize what is already implemented, identify the next missing decision or delivery gap, and then work only on that step."
 
 ## Recommended Immediate Next Task
 
-Start implementation planning from the technical spec: create the starter repository structure, define Payload collections and globals, and then define the shared business schema.
+Reconcile planning docs with the implemented starter, then choose the next concrete gap intentionally.
+
+Recommended order:
+
+1. document the implemented baseline that now exists
+2. decide whether the next step is shared business schema, lead-delivery notifications, or deployment / CI hardening
+3. keep business-level unresolved decisions separate from code-level cleanup
 
 ## Additional Global Constraints To Apply
 
@@ -56,3 +73,6 @@ Start implementation planning from the technical spec: create the starter reposi
 2. Avoid building the full automation stack before real outreach starts.
 3. Build the starter site system before advanced orchestration.
 4. Treat prompt libraries as support tools, not as the operating system itself.
+5. Require validation commands for agent-generated code, not just editor silence.
+6. Treat fake user-facing success states and draft-content exposure as release blockers.
+7. Verify feature-gated behavior in both enabled and disabled states.

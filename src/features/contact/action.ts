@@ -1,6 +1,8 @@
 'use server'
 
 import { headers } from 'next/headers'
+
+import { getPayloadClient } from '@/lib/payload'
 import { contactSchema } from '@/lib/schemas/contact'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { verifyTurnstile } from '@/lib/turnstile'
@@ -11,24 +13,22 @@ export type FormState = {
   fieldErrors?: Record<string, string[]>
 }
 
-export async function submitContactForm(
-  data: {
-    name: string
-    email: string
-    phone?: string
-    service?: string
-    message: string
-    turnstileToken: string
-    honeypot?: string
-  },
-): Promise<FormState> {
-  // Honeypot check — bots fill hidden fields
+type SubmitContactFormInput = {
+  name: string
+  email: string
+  phone?: string
+  service?: string
+  message: string
+  turnstileToken: string
+  honeypot?: string
+  source?: string
+}
+
+export async function submitContactForm(data: SubmitContactFormInput): Promise<FormState> {
   if (data.honeypot) {
-    // Silently succeed to not tip off bots
     return { success: true }
   }
 
-  // Rate limiting by IP
   const headersList = await headers()
   const ip = headersList.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
   const { success: withinLimit } = await checkRateLimit(ip)
@@ -36,13 +36,11 @@ export async function submitContactForm(
     return { success: false, error: 'Too many requests. Please try again in a minute.' }
   }
 
-  // Turnstile verification
   const turnstileValid = await verifyTurnstile(data.turnstileToken)
   if (!turnstileValid) {
     return { success: false, error: 'Verification failed. Please try again.' }
   }
 
-  // Validate with Zod
   const result = contactSchema.safeParse(data)
   if (!result.success) {
     const fieldErrors: Record<string, string[]> = {}
@@ -54,8 +52,22 @@ export async function submitContactForm(
     return { success: false, error: 'Please fix the errors below.', fieldErrors }
   }
 
-  // TODO: Deliver the lead (email, CRM, Payload collection, etc.)
-  // This is intentionally left as a hook point — delivery method is per-client.
+  try {
+    const payload = await getPayloadClient()
+    await payload.create({
+      collection: 'contact-submissions',
+      data: {
+        ...result.data,
+        source: data.source ?? 'contact-page',
+      },
+    })
+  } catch (error) {
+    console.error('Failed to store contact submission', error)
+    return {
+      success: false,
+      error: 'We could not submit your request right now. Please try again shortly.',
+    }
+  }
 
   return { success: true }
 }
