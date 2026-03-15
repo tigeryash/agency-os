@@ -1,292 +1,192 @@
 # Payload Schema Reconciliation
 
-This file audits the currently implemented Payload collections and globals against the approved shared schema in `planning/20-shared-business-schema.md`.
+This file records the current reconciliation status between the implemented Payload schema and the approved shared schema in `planning/20-shared-business-schema.md`.
 
-This is an audit artifact only. It does not implement the changes.
+It replaces the earlier mismatch audit with the current repo-aligned status so future agents are not working from stale gaps that have already been resolved.
 
-## Resolved In Code Since This Audit
+## Current Status
 
-1. V1 now uses a canonical `leads` collection for inbound form capture instead of keeping `contact-submissions` as the primary record.
-2. Contact form submissions now map directly into the approved lead ownership boundary with implementation-specific `inquiryMessage` retained for inbound context.
-3. Header CTA and footer contact info now have explicit inherit-versus-override controls relative to SiteSettings.
-4. A one-off migration script now exists to import legacy `contact-submissions` rows into `leads` without duplicating already-migrated records.
-5. Legacy `contact-submissions` collection removed from Payload config. The migration script and collection file are retained in the repo for reference but the collection is no longer registered.
-6. Canonical `opportunities` collection added, matching the approved Opportunity field group in `planning/20-shared-business-schema.md`.
-7. Reviews confirmed as a lighter exception to the publication group: no `publishedAt` field in V1. Reviews are not individually routable and use `status` (draft/published/archived) plus `featured` flag for display control. Adding `publishedAt` is deferred until scheduled review publishing is needed.
-8. Tagline from SiteSettings is now surfaced in the Header and Footer frontend components.
+The highest-priority reconciliation work is complete in the current repo.
 
-## Confirmed Scope Summary
+Implemented and verified:
 
-Compared:
+1. public collections use shared slug controls, shared SEO fields, and shared publication status support where applicable
+2. frontend queries gate published content correctly, including `publishedAt` handling for routable public content
+3. `site-settings` owns the shared business identity and primary CTA baseline for V1
+4. `services` use direct `servedAreas` linkage
+5. `service-areas` include the approved location fields needed for V1
+6. `leads` is the canonical inbound lead record
+7. `opportunities` exists as the canonical opportunity record linked to leads
+8. header CTA and footer contact info have explicit inherit-versus-override behavior relative to `site-settings`
+9. `tagline` is surfaced in the Header and Footer frontend components
 
-1. all implemented Payload collections
-2. all implemented Payload globals
-3. shared field groups, publication conventions, slug conventions, and front-office entity boundaries
+## Resolved Decisions
 
-Out of scope:
+### Shared Field Strategy
 
-1. implementing the changes
-2. changing CRM or orchestration decisions
-3. changing pricing, branding, or marketing direction
-4. block implementation details beyond schema surface mismatches
+Payload uses nested groups where they improve CMS ergonomics.
 
-## Collection Audit
+Current canonical direction:
+
+1. shared SEO remains a nested `meta` group in Payload
+2. business identity and CTA defaults live in `site-settings`
+3. planning field names remain the conceptual contract, while Payload may use grouped implementations that map cleanly to that contract
+
+### Lead Ownership
+
+V1 uses `leads` as the canonical lead collection.
+
+Implementation notes:
+
+1. contact form submissions write directly to `leads`
+2. legacy `contact-submissions` is retained in the repo only as an unregistered reference shape
+3. the one-off migration script remains available for importing old records into `leads` if needed
+
+### Reviews Publication Exception
+
+Reviews are a documented lighter exception to the full publication group in V1.
+
+Current rule:
+
+1. reviews use `status` plus `featured`
+2. reviews do not include `publishedAt` in V1
+3. adding scheduled publication for reviews is deferred until there is a real product need
+
+## Current Collection Status
 
 ### Pages
 
-Current state:
+Status: aligned for V1.
 
-1. has `title`, `slug`, `layout`, `meta`, `publishedAt`, and `status`
-2. aligns partially with slug, SEO, and publication field groups
+Implemented:
 
-Gaps:
-
-1. `meta` uses nested `title`, `description`, and `image` instead of shared names like `metaTitle`, `metaDescription`, and `ogImage`
-2. missing `noIndex`, `canonicalUrl`, and `structuredDataType`
-3. missing `slugLock`
-4. status options only support `draft` and `published`; shared schema also requires `archived`
-5. no explicit rule in the schema implementation yet for `publishedAt` gating on scheduled publication
-
-Action:
-
-1. expand the SEO group to match the approved shared schema
-2. add `slugLock`
-3. add `archived` to public-content status options
-4. decide whether the current nested `meta` group stays canonical or is renamed to shared field names during implementation
+1. shared slug fields including `slugLock`
+2. shared SEO field group
+3. shared publication fields including `archived`
 
 ### Services
 
-Current state:
+Status: aligned for V1.
 
-1. has `title`, `slug`, `summary`, `image`, `content`, `meta`, and `status`
-2. aligns partially with slug and SEO groups
+Implemented:
 
-Gaps:
-
-1. missing `publishedAt`
-2. missing `slugLock`
-3. status options only support `draft` and `published`; shared schema also requires `archived`
-4. `meta` uses current nested names rather than the shared SEO field names
-5. missing `noIndex`, `canonicalUrl`, and `structuredDataType`
-6. shared schema expects service-to-service-area linkage via `servedAreas`, but the current collection has no direct area relationship
-
-Action:
-
-1. add the full publication field group, including `publishedAt`
-2. add `slugLock`
-3. add direct service-area linkage or explicitly document that the reverse relationship on service areas is the canonical V1 implementation
-4. align the SEO field group surface with the approved schema
+1. shared slug fields including `slugLock`
+2. shared SEO field group
+3. shared publication fields
+4. direct `servedAreas` relationship
 
 ### ServiceAreas
 
-Current state:
+Status: aligned for V1.
 
-1. has `title`, `slug`, `description`, `services`, `content`, `meta`, and `status`
-2. partially aligns with slug, SEO, and service-area concepts
+Implemented:
 
-Gaps:
+1. shared slug fields including `slugLock`
+2. shared SEO field group
+3. shared publication fields
+4. `areaType`, `parentArea`, `geoModifier`, and location coordinates for V1
 
-1. missing `publishedAt`
-2. missing `slugLock`
-3. status options only support `draft` and `published`; shared schema also requires `archived`
-4. missing the approved location-specific fields: `areaType`, `parentArea`, `latitude`, `longitude`, `radiusKm`, and `geoModifier`
-5. `title` currently acts like `areaName`, but that naming choice is not reconciled with the shared schema yet
-6. `services` is the inverse of the schema’s `servedAreas` linkage model rather than the exact shared naming
-7. SEO group still uses the current nested `meta` shape instead of the approved shared field names
+Boundary note:
 
-Action:
-
-1. add the missing location field group
-2. add the full publication field group
-3. resolve whether `title` remains the canonical display name for service areas or whether `areaName` should be introduced
-4. align SEO field names and slug controls with the shared schema
+1. `title` remains the routable display name in implementation rather than introducing a separate `areaName` field
 
 ### Posts
 
-Current state:
+Status: aligned for V1.
 
-1. has `title`, `slug`, `summary`, `featuredImage`, `content`, `meta`, `publishedAt`, and `status`
-2. aligns partially with slug, SEO, and publication groups
+Implemented:
 
-Gaps:
-
-1. missing `slugLock`
-2. status options only support `draft` and `published`; shared schema also requires `archived`
-3. SEO group uses current nested names rather than approved shared field names
-4. missing `noIndex`, `canonicalUrl`, and `structuredDataType`
-5. blog-specific fields remain minimal; this is acceptable for now but should be documented as intentionally lean rather than overlooked
-
-Action:
-
-1. add `slugLock`
-2. add `archived` to the status vocabulary
-3. align the SEO group to the approved shared field set
+1. shared slug fields including `slugLock`
+2. shared SEO field group
+3. shared publication fields including `archived`
 
 ### Reviews
 
-Current state:
+Status: intentionally lighter exception in V1.
 
-1. has `author`, `rating`, `content`, `service`, `serviceArea`, `featured`, and `status`
-2. aligns with the schema boundary that reviews are domain-specific and not individually routable in V1
+Implemented:
 
-Gaps:
+1. `draft`, `published`, `archived`
+2. `featured` flag for display emphasis
 
-1. status options only support `draft` and `published`; shared schema requires `archived`
-2. if reviews are considered public content, the publication group is incomplete because `publishedAt` is missing
-3. there is no explicit display-approval or moderation field even though the schema boundary notes review-specific approval concerns
+Deferred:
 
-Action:
+1. `publishedAt`
+2. moderation-specific approval fields unless review operations become more complex
 
-1. add `archived` to review status values
-2. decide whether reviews need `publishedAt` in V1 or whether reviews should be documented as a lighter exception to the publication group
-3. consider a review approval flag only if moderation needs are expected soon
+### Leads
 
-### Media
+Status: aligned as the canonical V1 lead record.
 
-Current state:
+Implemented:
 
-1. has upload config and required `alt`
-2. aligns with the schema boundary that media is separate from slug, SEO, and publication groups
+1. shared inbound lead ownership surface for contact-form capture
+2. source tracking
+3. duplicate and outreach status tracking
 
-Gaps:
+Implementation note:
 
-1. no major shared-schema mismatch
-2. focal point and richer asset metadata remain deferred, which matches the schema
+1. `inquiryMessage` is retained as an implementation-specific inbound form field
 
-Action:
+### Opportunities
 
-1. no immediate schema-alignment action required
+Status: aligned for V1.
 
-### ContactSubmissions
+Implemented:
 
-Current state:
+1. required `leadReference`
+2. qualification, fit, urgency, likely tier, rationale, next action, outreach angle, response status, and assignment fields
 
-1. stores inbound form submissions with `name`, `email`, `phone`, `service`, `message`, `source`, and `status`
-2. is private and access-controlled, which is operationally sound
+Implementation note:
 
-Gaps:
+1. stored `likelyTier` values are normalized as lowercase enum values (`launch`, `growth`, `premium`) while labels remain `Launch`, `Growth`, and `Premium`
 
-1. the shared schema defines a front-office `Lead` entity, but no Payload `Lead` collection exists
-2. `contact-submissions` does not match the approved lead shape: it lacks `companyName`, `websiteUrl`, `serviceCategory`, `serviceArea`, `contactPath`, `websiteIssueSummary`, `evidenceNotes`, and `duplicateCheckStatus`
-3. current `status` values (`new`, `in-progress`, `closed`) do not align with the lead schema’s `outreachStatus` or opportunity schema’s `qualificationStatus`
-4. current `name` field is ambiguous between contact person and business identity
-
-Action:
-
-1. decide whether `contact-submissions` is a temporary intake buffer or the canonical Lead collection for V1
-2. if it becomes the canonical Lead record, expand and rename fields to match the approved shared schema
-3. if it remains a separate intake buffer, define a mapping step from submission to Lead
-
-### Users
-
-Current state:
-
-1. supports authentication with `name` and `role`
-2. is outside the shared business schema scope
-
-Gaps:
-
-1. none relative to the current shared schema because user-role design is explicitly deferred
-
-Action:
-
-1. no immediate schema-alignment action required
-
-## Global Audit
+## Global Status
 
 ### SiteSettings
 
-Current state:
+Status: aligned for V1.
 
-1. has `businessName`, `phone`, `email`, nested `address`, `primaryCTA`, and `analytics`
-2. is the closest current implementation to the approved Business Identity and Contact / CTA field groups
+Implemented:
 
-Gaps:
-
-1. `phone` and `email` are singular rather than shared names like `phonePrimary` and `emailPrimary`
-2. missing `tagline`, `logo`, `logoAlt`, `phoneSecondary`, `addressCountry`, `googleBusinessUrl`, `licenseNumber`, and `yearEstablished`
-3. `address` is nested and concise, while the shared schema currently lists flat field names; this needs one canonical direction
-4. `primaryCTA` only includes `label` and `url`; missing `ctaStyle`
-5. missing `contactFormRecipient`, `contactPhoneDisplay`, `contactPhoneHref`, `hoursSummary`, and `emergencyAvailable`
-6. `analytics` exists in implementation but is not yet represented in the shared schema’s field-group map
-
-Action:
-
-1. decide whether shared field groups should stay nested for Payload ergonomics or remain flat planning aliases
-2. expand SiteSettings to fully cover the approved Business Identity and Contact / CTA groups
-3. add analytics as an explicit approved extension or document it as implementation-specific
+1. business identity fields including `tagline`, `logo`, `logoAlt`, primary and secondary contact fields, address country, and trust fields
+2. primary CTA defaults including style
+3. contact form recipient, hours summary, and emergency availability
+4. default SEO fallback fields
+5. analytics as an implementation-specific extension
 
 ### Header
 
-Current state:
+Status: aligned for V1.
 
-1. has `navItems` and nested `cta`
-2. aligns with the schema boundary that navigation is navigation-specific
+Implemented:
 
-Gaps:
-
-1. `cta` duplicates global CTA structure instead of clearly inheriting from SiteSettings
-2. missing `ctaStyle` on the header CTA if visual variant matters at the schema level
-3. no planning-level decision is documented for when header CTA should inherit versus override shared CTA defaults
-
-Action:
-
-1. document inheritance rules between SiteSettings CTA defaults and Header CTA overrides
-2. align the header CTA surface with the shared CTA field group where overrides are allowed
+1. navigation-specific fields remain separate
+2. CTA supports explicit inheritance from `site-settings` or local override
 
 ### Footer
 
-Current state:
+Status: aligned for V1.
 
-1. has `navGroups`, `contactInfo`, `trustLinks`, and `copyright`
-2. aligns broadly with the navigation-specific boundary in the shared schema
+Implemented:
 
-Gaps:
+1. navigation-specific fields remain separate
+2. contact info supports explicit inheritance from `site-settings` or local override
 
-1. `contactInfo.phone` and `contactInfo.email` duplicate business/contact fields already owned by SiteSettings
-2. no explicit rule is documented for whether footer contact fields are inherited or overridden
-3. footer does not expose CTA configuration, which is acceptable, but the override rule should still be explicit
+## Remaining Intentional Deferrals
 
-Action:
+1. CRM and orchestration tool selection
+2. proposal, contract, and later sales-pipeline entities
+3. advanced block schema changes unrelated to shared-field adoption
+4. review scheduling and richer moderation controls
+5. multi-location schema beyond the current V1 boundary
 
-1. document whether Footer contact fields are direct references to SiteSettings defaults or separate overrides
-2. keep footer navigation-specific, but reduce duplicate business-contact ownership where possible
+## Next Recommended Focus
 
-## Missing Entirely
+The next step after this reconciliation work is not additional schema churn by default.
 
-These schema entities or surfaces are approved in planning but missing from the current Payload implementation:
+Recommended order:
 
-1. canonical Lead collection aligned to the approved shared Lead field group
-2. canonical Opportunity collection aligned to the approved shared Opportunity field group
-3. full shared SEO field group on public collections
-4. full shared Business Identity field group on SiteSettings
-5. full location field group on ServiceAreas
-6. `slugLock` on routable collections
-7. `archived` status support across public content
-
-## Prioritized Action Items
-
-### Priority 1
-
-1. Decide the canonical field naming and grouping strategy for shared fields in Payload implementation: nested groups with camelCase subfields versus flat field names.
-2. Resolve whether `contact-submissions` becomes the canonical Lead collection or maps into a new Lead collection.
-3. Add missing publication-state alignment across public collections: `archived`, `publishedAt` where required, and consistent frontend query rules.
-
-### Priority 2
-
-1. Standardize the SEO field group across pages, services, service areas, and posts.
-2. Add `slugLock` consistently to routable collections.
-3. Expand SiteSettings to fully own business identity and default CTA/contact fields.
-
-### Priority 3
-
-1. Add the missing location-specific fields to ServiceAreas.
-2. Clarify header and footer inheritance rules versus override behavior for CTA and contact info.
-3. Add Lead and Opportunity collections only after the V1 ownership decision is explicit.
-
-## Explicit Deferrals
-
-1. exact Payload implementation changes remain deferred to the implementation task
-2. CRM and orchestration choices remain deferred
-3. proposal, contract, and later pipeline entities remain deferred
-4. advanced block schema changes remain deferred unless required by shared-field adoption
+1. verify GitHub CI runs green with the current workflow
+2. keep deployment and environment docs aligned with real runtime assumptions
+3. move into first-template or offer-validation work only after CI is stable

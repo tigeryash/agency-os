@@ -64,14 +64,15 @@ This file defines the deployment requirements, environment variables, and secret
 
 ### CI Secrets
 
-The GitHub Actions workflow expects these as repository secrets:
+The current GitHub Actions workflow is self-contained for baseline CI and does not require repository secrets.
 
-| Secret | Required | Notes |
-|---|---|---|
-| `DATABASE_URI` | Yes (for E2E) | Should point to a dedicated CI test database |
-| `PAYLOAD_SECRET` | No | Falls back to a safe CI-only default |
+Current behavior:
 
-To set up: **Settings > Secrets and variables > Actions > New repository secret**
+1. CI provisions its own Postgres service container for E2E
+2. CI seeds the database before build and Playwright tests
+3. CI uses a workflow-scoped non-production `PAYLOAD_SECRET`
+
+Repository secrets are only needed if CI is later expanded to use external hosted services or protected integrations.
 
 ## Pre-Launch Deployment Checklist
 
@@ -94,7 +95,7 @@ Before any client site goes live:
 | Environment | Database | Secrets | Tier |
 |---|---|---|---|
 | Local dev | Local or dev PostgreSQL | `.env` file | Any (default `launch`) |
-| CI | Dedicated CI test database | GitHub Actions secrets | `growth` (tests all features) |
+| CI | Ephemeral Postgres service container in GitHub Actions | Workflow env plus optional GitHub secrets if future integrations require them | `growth` (tests all features) |
 | Staging | Staging PostgreSQL | Platform env vars | Matches production |
 | Production | Production PostgreSQL | Platform env vars | Client-specific |
 

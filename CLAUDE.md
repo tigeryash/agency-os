@@ -3,7 +3,7 @@
 Agent-first, human-approved web agency for home services in the Greater Toronto Area.
 
 ## Current Stage
-Planning and architecture only. Do not assume implementation has started unless the current task explicitly says so.
+Implemented starter with active planning for unresolved business and architecture decisions. Do not assume the repo is planning-only.
 
 ## Locked Decisions
 Do not change these without explicit approval.
@@ -28,13 +28,7 @@ Do not change these without explicit approval.
 See `planning/18-current-task.md` for the active task. Do not infer a broader task from older planning files.
 
 ## Out Of Scope For This Session
-- Payload collections and globals
-- Shared business schema
-- Pricing model decisions
-- CRM and orchestration tool choices
-- Brand naming or positioning changes
-- Marketing scope changes
-- Advanced automation or orchestration design
+Follow `planning/18-current-task.md` for the active session scope. Do not use this section as a broader override when the current-task file is more specific.
 
 ## Required Read Order
 1. Read this file first.
@@ -63,11 +57,9 @@ Do not treat backlog items as active work unless `planning/18-current-task.md` s
 ## Done Condition For Current Task
 This step is complete when:
 
-1. The monolithic starter repo structure is defined
-2. Folder boundaries are clear
-3. Base config surface is identified
-4. Payload schema design is explicitly deferred
-5. The result supports Launch now without blocking Growth later
+1. The requirements in `planning/18-current-task.md` are satisfied
+2. Validation listed for that task has been run or explicitly deferred
+3. The result does not broaden scope beyond the active task without approval
 
 ## Preferred Output Shape
 For planning tasks, prefer concise outputs in this order:
@@ -102,4 +94,5 @@ Read these only when needed for the current task.
 - `planning/19-starter-skeleton.md` — approved repo skeleton and config boundaries
 - `planning/20-shared-business-schema.md` — shared field groups, entity boundaries, status conventions, and reuse rules
 - `planning/22-deployment-and-secrets.md` — deployment requirements, environment variables, and secret-handling rules
+- `planning/23-first-template-direction.md` — first home-services template-family direction and initial demo-site brief
 - `planning/agents/` — per-agent specs

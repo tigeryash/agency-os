@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { getPayloadClient } from '@/lib/payload'
-import { getSiteSettings } from '@/lib/metadata'
 import { Container } from '@/components/ui'
 
 type NavGroup = {
@@ -26,7 +25,7 @@ export async function Footer() {
   const payload = await getPayloadClient()
   const [footer, siteSettings] = await Promise.all([
     payload.findGlobal({ slug: 'footer' }) as Promise<FooterData>,
-    getSiteSettings() as Promise<SiteSettingsData>,
+    payload.findGlobal({ slug: 'site-settings' }) as Promise<SiteSettingsData>,
   ])
   const navGroups = footer?.navGroups ?? []
   const shouldInheritContactInfo = footer?.contactInfo?.inheritFromSiteSettings ?? true

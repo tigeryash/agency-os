@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { getPayloadClient } from '@/lib/payload'
-import { getSiteSettings } from '@/lib/metadata'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Button } from '@/components/ui'
 
@@ -30,7 +29,7 @@ export async function Header() {
   const payload = await getPayloadClient()
   const [header, siteSettings] = await Promise.all([
     payload.findGlobal({ slug: 'header' }) as Promise<HeaderData>,
-    getSiteSettings() as Promise<SiteSettingsData>,
+    payload.findGlobal({ slug: 'site-settings' }) as Promise<SiteSettingsData>,
   ])
   const gatedRoutes: Record<string, Parameters<typeof isFeatureEnabled>[0]> = {
     '/blog': 'blog',
