@@ -58,6 +58,8 @@ These are valuable, but lower priority than the agents required to source leads,
 
 Each agent belongs to one of the business layers:
 
+The Orchestrator Agent is a control-layer role. It coordinates work across layers but does not replace stage-specific agents.
+
 ### Front Office
 
 - Research Agent
@@ -102,6 +104,8 @@ This is also not a single agent. It is the set of global rules that govern:
 4. exception handling
 5. metrics and profitability review
 
+When multi-agent work is active, the Orchestrator Agent is the operational owner of this layer for the current task wave. Detailed execution rules live in `planning/26-orchestration-policy.md`.
+
 ## Recommended Agent File Format
 
 Each agent file should include:
@@ -110,11 +114,13 @@ Each agent file should include:
 2. stage in the operating system
 3. allowed inputs
 4. required context
-5. output format
-6. failure rules
-7. human review requirements
-8. metrics
-9. current prompt or instructions
+5. allowed change surface when it edits code or planning artifacts
+6. required validation
+7. output format
+8. failure rules
+9. human review requirements
+10. metrics
+11. current prompt or instructions
 
 ## What Belongs In Agent Files vs Top-Level Files
 
@@ -132,9 +138,11 @@ Put in individual agent files:
 2. stage and layer placement
 3. inputs and outputs
 4. tool access
-5. failure and escalation rules
-6. human review points for that specific agent
-7. agent-specific success metrics
-8. current instruction set or linked prompt
+5. allowed change surface and forbidden surfaces when relevant
+6. validation obligations
+7. failure and escalation rules
+8. human review points for that specific agent
+9. agent-specific success metrics
+10. current instruction set or linked prompt
 
 Start with the template in `_agent-template.md`.

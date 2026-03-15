@@ -54,6 +54,96 @@ Do not treat backlog items as active work unless `planning/18-current-task.md` s
 - Build the starter site system before advanced orchestration
 - Skills and MCP usage must support the operating system, not replace it
 
+## Orchestration Rules
+
+Use an orchestration-first workflow when multiple agents are active.
+
+The goal is to maximize development speed without creating overlap, skipped validation, hidden conflicts, or security regressions.
+
+Keep this file as the control-plane summary. Put detailed orchestration procedures, task-packet templates, and merge checklists in `planning/26-orchestration-policy.md` so they are loaded only when multi-agent coordination is actually in scope.
+
+### Control Model
+
+1. One orchestrator owns planning, task partitioning, sequencing, and merge decisions.
+2. Worker agents only execute bounded tasks with explicit scope.
+3. The orchestrator is the only agent allowed to change the active-task definition, handoff direction, or control-plane guidance unless explicitly approved.
+4. Human approval remains required at the existing trust and scope gates.
+
+### Parallel Work Rules
+
+Parallel work is allowed only when scopes are independent and mergeable.
+
+Allowed parallel work:
+
+1. read-only research on different topics
+2. planning work in separate files with no shared ownership
+3. implementation in separate feature areas with no overlapping files
+4. audit or review passes that do not mutate the same surface
+
+Do not run agents in parallel when:
+
+1. they edit the same file or folder subtree
+2. they mutate the same business record or planning artifact
+3. one task depends on unfinished output from another task
+4. one task is planning and the other is implementation for the same scope
+5. the task is underspecified enough that workers would improvise incompatible assumptions
+
+### Single-Owner Control Surfaces
+
+The following surfaces should have single-agent ownership unless the user explicitly approves otherwise:
+
+1. `CLAUDE.md`
+2. `planning/18-current-task.md`
+3. `planning/04-session-handoff.md`
+4. shared schema and Payload config surfaces
+5. security, deployment, and validation rules
+
+### Worker Contract
+
+Every worker task must define:
+
+1. exact goal
+2. files or records it may touch
+3. files or records it must not touch
+4. dependencies
+5. required validation
+6. expected output artifact
+
+Every worker result must report:
+
+1. scope completed
+2. files touched
+3. assumptions made
+4. validation run
+5. unresolved issues or merge risks
+
+### Merge And Validation Rules
+
+1. No worker output is considered complete until required validation has run or been explicitly deferred.
+2. The orchestrator must check for overlapping edits before merging work.
+3. If two outputs conflict, prefer sequential resolution over parallel patching.
+4. Security-sensitive, schema-sensitive, and control-plane changes should be merged conservatively even when development speed is a priority.
+5. Fast execution is preferred, but never at the cost of skipped validation, weakened security boundaries, or scope drift.
+
+### Escalation Rules
+
+Escalate instead of continuing in parallel when:
+
+1. file ownership becomes unclear
+2. task boundaries start overlapping
+3. a worker needs to broaden scope to finish
+4. a change affects pricing, CRM selection, positioning, secrets, or approval policy
+5. a worker cannot validate its result confidently
+
+### Practical Default
+
+When in doubt:
+
+1. use one primary agent per stage
+2. use helper agents only for bounded subproblems
+3. keep planning and implementation separated when the target is still moving
+4. optimize for clean handoffs and validated merges, not raw agent count
+
 ## Done Condition For Current Task
 This step is complete when:
 
@@ -95,4 +185,8 @@ Read these only when needed for the current task.
 - `planning/20-shared-business-schema.md` — shared field groups, entity boundaries, status conventions, and reuse rules
 - `planning/22-deployment-and-secrets.md` — deployment requirements, environment variables, and secret-handling rules
 - `planning/23-first-template-direction.md` — first home-services template-family direction and initial demo-site brief
+- `planning/24-front-office-mvp.md` — front-office MVP scope, rubric, outreach-framework target, and handoff requirements
+- `planning/25-front-office-mvp-standard.md` — operational qualification rubric, outreach framework, and handoff contract for Research → Qualification → Outreach
+- `planning/26-orchestration-policy.md` — detailed multi-agent execution policy, worker task packet, merge checklist, and escalation protocol
+- `planning/27-orchestrated-test-wave.md` — first bounded orchestration wave for testing multi-agent coordination on Wave 1 agent specs
 - `planning/agents/` — per-agent specs

@@ -143,6 +143,8 @@ Use agent files for the agent-specific subset of those rules.
 4. Prefer sequential stage flow with parallel work only inside a stage.
 5. Route models by task type instead of using one model for everything.
 
+Detailed multi-agent execution policy, worker packet structure, and merge discipline live in `planning/26-orchestration-policy.md`.
+
 ## Model Routing
 
 Cheap fast models:

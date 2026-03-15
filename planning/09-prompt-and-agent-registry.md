@@ -21,6 +21,17 @@ For each active agent or workflow prompt, record:
 
 ## Active Registry
 
+### Orchestrator Agent
+
+- Purpose: own task partitioning, worker assignment boundaries, sequencing, merge discipline, and escalation for multi-agent execution
+- Version: v0
+- Layer: Control Layer
+- Priority wave: cross-cutting
+- Owner: pending
+- Linked spec: `agents/orchestrator-agent.md`
+- External support: none required initially
+- Status: spec drafted
+
 ### Research Agent
 
 - Purpose: find and audit potential local business leads
@@ -156,3 +167,5 @@ For each active agent or workflow prompt, record:
 ## Versioning Rule
 
 If a prompt or agent changes in a meaningful way, update its version and record the change in `07-experiments.md` or `05-decision-log.md` depending on whether it is an experiment or a permanent decision.
+
+For multi-agent process changes, also verify that `CLAUDE.md` and `planning/26-orchestration-policy.md` still match the registry entry and linked agent spec.

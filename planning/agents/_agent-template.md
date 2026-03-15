@@ -29,6 +29,14 @@ Which business layer this agent belongs to:
 
 - what records or supporting data the agent needs
 
+## Allowed Change Surface
+
+- list the files, folders, records, or systems this agent may update when assigned a write task
+
+## Forbidden Surface
+
+- list control-plane, security-sensitive, or unrelated surfaces this agent must not change
+
 ## Tools And Access
 
 - what tools or systems the agent is allowed to use
@@ -43,6 +51,11 @@ Which business layer this agent belongs to:
 
 - exact expected output 1
 - exact expected output 2
+
+## Validation Required
+
+- list the checks this agent must run before calling the task complete
+- if validation is optional, state the explicit deferral rule
 
 ## Output Format
 
@@ -59,6 +72,8 @@ Describe the required structure of the output so it is easy to review or pass to
 - what the agent must not do
 - where it must escalate
 - what it is not allowed to assume
+
+For multi-agent execution, reference `planning/26-orchestration-policy.md` instead of re-writing the global coordination rules here.
 
 ## Failure And Escalation Rules
 

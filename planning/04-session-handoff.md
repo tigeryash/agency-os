@@ -58,13 +58,29 @@ Planning is still active for unresolved business and architecture decisions, but
 
 ## Recommended Immediate Next Task
 
-Define the first home-services template family and demo-site brief so implementation work has one clear product target.
+The first orchestrated test wave has been completed successfully. Choose one of:
 
-Recommended order:
+1. test the front-office qualification rubric on sample leads
+2. iterate on Wave 1 agent specs if gaps appear during sample testing
+3. return to starter site implementation work
 
-1. choose one home-services template family direction
-2. define one credible demo-site brief against that direction
-3. keep infrastructure and schema changes issue-driven rather than reopening them by default
+## Multi-Agent Coordination Status
+
+The repo now has a two-level orchestration model:
+
+1. `CLAUDE.md` holds the mandatory control-plane summary and non-negotiable guardrails
+2. `planning/26-orchestration-policy.md` holds the detailed worker-packet, merge, and escalation procedure for parallel execution
+
+If running multiple agents, load both before assigning work packets.
+
+The first orchestrated test wave (`planning/27-orchestrated-test-wave.md`) has been executed:
+
+1. Research, Qualification, and Outreach agent specs retrofitted to the stronger template
+2. All three specs now include Allowed Change Surface, Forbidden Surface, Validation Required, and External Skill Support
+3. Handoff contract fields, rubric encoding, and evidence requirements are aligned with `planning/25-front-office-mvp-standard.md`
+4. Orchestration model validated: clean ownership boundaries, no overlapping edits, no scope drift, explicit validation
+
+Key learning: subagent write permissions were the main friction point. Packet design, overlap avoidance, and merge discipline worked as intended.
 
 ## Additional Global Constraints To Apply
 
