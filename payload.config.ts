@@ -10,6 +10,7 @@ import { ServiceAreas } from '@/payload/collections/ServiceAreas'
 import { Reviews } from '@/payload/collections/Reviews'
 import { Posts } from '@/payload/collections/Posts'
 import { Media } from '@/payload/collections/Media'
+import { Users } from '@/payload/collections/Users'
 
 import { SiteSettings } from '@/payload/globals/SiteSettings'
 import { Header } from '@/payload/globals/Header'
@@ -23,7 +24,13 @@ export default buildConfig({
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URI || '' },
   }),
-  collections: [Pages, Services, ServiceAreas, Reviews, Posts, Media],
+  collections: [Pages, Services, ServiceAreas, Reviews, Posts, Media, Users],
+  admin: {
+    user: Users.slug,
+    importMap: {
+      baseDir: path.resolve(dirname),
+    },
+  },
   globals: [SiteSettings, Header, Footer],
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
