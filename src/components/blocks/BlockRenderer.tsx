@@ -1,3 +1,4 @@
+import { isFeatureEnabled, type FeatureKey } from '@/lib/tiers'
 import { HeroBlock } from './HeroBlock'
 import { CtaBandBlock } from './CtaBandBlock'
 import { ServicesGridBlock } from './ServicesGridBlock'
@@ -36,6 +37,16 @@ const blockComponents: Record<string, React.ComponentType<{ block: Block }>> = {
   emergencyCallout: EmergencyCalloutBlock,
 }
 
+// Blocks that require a specific feature flag to render
+const gatedBlocks: Partial<Record<string, FeatureKey>> = {
+  emergencyCallout: 'emergencyCallout',
+  resultHighlights: 'resultHighlights',
+  blogPreview: 'blogPreview',
+  contactForm: 'contactForm',
+  serviceAreaCoverage: 'serviceAreas',
+  review: 'reviews',
+}
+
 interface BlockRendererProps {
   blocks: Block[]
 }
@@ -46,6 +57,10 @@ export function BlockRenderer({ blocks }: BlockRendererProps) {
       {blocks.map((block, index) => {
         const Component = blockComponents[block.blockType]
         if (!Component) return null
+
+        const requiredFeature = gatedBlocks[block.blockType]
+        if (requiredFeature && !isFeatureEnabled(requiredFeature)) return null
+
         return <Component key={block.id ?? index} block={block} />
       })}
     </>

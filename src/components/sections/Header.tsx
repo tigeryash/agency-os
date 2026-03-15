@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getPayloadClient } from '@/lib/payload'
+import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Button } from '@/components/ui'
 
 type NavItem = {
@@ -16,7 +17,15 @@ type HeaderData = {
 export async function Header() {
   const payload = await getPayloadClient()
   const header = (await payload.findGlobal({ slug: 'header' })) as HeaderData
-  const navItems = header?.navItems ?? []
+  const gatedRoutes: Record<string, Parameters<typeof isFeatureEnabled>[0]> = {
+    '/blog': 'blog',
+    '/service-areas': 'serviceAreas',
+  }
+
+  const navItems = (header?.navItems ?? []).filter((item) => {
+    const feature = gatedRoutes[item.url]
+    return !feature || isFeatureEnabled(feature)
+  })
   const cta = header?.cta
 
   return (

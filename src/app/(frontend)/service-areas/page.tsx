@@ -1,8 +1,12 @@
+import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload'
+import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading } from '@/components/ui'
 import Link from 'next/link'
 
 export default async function ServiceAreasPage() {
+  if (!isFeatureEnabled('serviceAreas')) notFound()
+
   const payload = await getPayloadClient()
   const { docs: areas } = await payload.find({
     collection: 'service-areas',

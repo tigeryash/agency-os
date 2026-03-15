@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload'
+import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading, RichText } from '@/components/ui'
 import type { Metadata } from 'next'
 
@@ -28,6 +29,7 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
 }
 
 export default async function PostPage({ params }: Args) {
+  if (!isFeatureEnabled('blog')) notFound()
   const { slug } = await params
   const post = await getPost(slug)
   if (!post) notFound()
