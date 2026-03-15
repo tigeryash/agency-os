@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.4.2",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "@payloadcms/db-postgres": "^3.79.0",
     "@payloadcms/next": "^3.0.0",
     "@payloadcms/richtext-lexical": "^3.0.0",
