@@ -10,6 +10,10 @@ This is an audit artifact only. It does not implement the changes.
 2. Contact form submissions now map directly into the approved lead ownership boundary with implementation-specific `inquiryMessage` retained for inbound context.
 3. Header CTA and footer contact info now have explicit inherit-versus-override controls relative to SiteSettings.
 4. A one-off migration script now exists to import legacy `contact-submissions` rows into `leads` without duplicating already-migrated records.
+5. Legacy `contact-submissions` collection removed from Payload config. The migration script and collection file are retained in the repo for reference but the collection is no longer registered.
+6. Canonical `opportunities` collection added, matching the approved Opportunity field group in `planning/20-shared-business-schema.md`.
+7. Reviews confirmed as a lighter exception to the publication group: no `publishedAt` field in V1. Reviews are not individually routable and use `status` (draft/published/archived) plus `featured` flag for display control. Adding `publishedAt` is deferred until scheduled review publishing is needed.
+8. Tagline from SiteSettings is now surfaced in the Header and Footer frontend components.
 
 ## Confirmed Scope Summary
 

@@ -22,6 +22,7 @@ type HeaderData = {
 
 type SiteSettingsData = {
   businessName?: string
+  tagline?: string
   primaryCTA?: { label?: string; url?: string; style?: 'primary' | 'secondary' | 'emergency' }
 }
 
@@ -49,8 +50,11 @@ export async function Header() {
     <header className="border-b bg-surface">
       <Container>
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="font-heading font-bold text-h4">
-            {brandName}
+          <Link href="/" className="flex flex-col">
+            <span className="font-heading font-bold text-h4">{brandName}</span>
+            {siteSettings.tagline && (
+              <span className="text-small text-foreground-muted leading-tight">{siteSettings.tagline}</span>
+            )}
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">

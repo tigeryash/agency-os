@@ -17,6 +17,7 @@ type FooterData = {
 
 type SiteSettingsData = {
   businessName?: string
+  tagline?: string
   phonePrimary?: string
   emailPrimary?: string
 }
@@ -68,6 +69,12 @@ export async function Footer() {
           ))}
 
           <div>
+            {siteSettings.businessName && (
+              <p className="font-heading font-semibold mb-1">{siteSettings.businessName}</p>
+            )}
+            {siteSettings.tagline && (
+              <p className="text-small text-foreground-inverse/70 mb-3">{siteSettings.tagline}</p>
+            )}
             {contactInfo?.phone && (
               <p className="text-small">
                 <span className="text-foreground-inverse/70">Phone: </span>
