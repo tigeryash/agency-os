@@ -75,11 +75,9 @@ Bun
 
 ## Deferrals
 
-- Payload collections and globals
-- Block field definitions and implementations
-- Design token values
-- Form implementation and spam protection
-- SEO and metadata helpers
 - Feature flags and tier gating logic
 - CI/CD pipeline
-- Database adapter choice
+
+## Future Considerations
+
+- `@mcp-b/react-webmcp` — browser-side MCP hooks to let AI assistants interact with the live frontend UI (e.g., helping clients navigate the site, assisting editors in the admin dashboard). Complementary to the existing server-side MCP at `/api/mcp`.
