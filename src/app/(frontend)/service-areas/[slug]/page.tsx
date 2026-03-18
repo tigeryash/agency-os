@@ -5,7 +5,6 @@ import { buildMetadata } from '@/lib/metadata'
 import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading, RichText } from '@/components/ui'
-import { ServiceAreaLivePreview } from '@/components/live-preview/ServiceAreaLivePreview'
 import { PreviewBanner } from '@/components/PreviewBanner'
 import type { Metadata } from 'next'
 
@@ -55,24 +54,17 @@ export default async function ServiceAreaPage({ params }: Args) {
 
   return (
     <main>
-      {isDraft ? (
-        <ServiceAreaLivePreview
-          initialData={area}
-          serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
-        />
-      ) : (
-        <Section>
-          <Container size="narrow">
-            <Heading level={1}>{area.title}</Heading>
-            {area.description && (
-              <p className="mt-4 text-foreground-muted">{area.description as string}</p>
-            )}
-            {area.content && (
-              <RichText data={area.content as SerializedEditorState} className="mt-8" />
-            )}
-          </Container>
-        </Section>
-      )}
+      <Section>
+        <Container size="narrow">
+          <Heading level={1}>{area.title}</Heading>
+          {area.description && (
+            <p className="mt-4 text-foreground-muted">{area.description as string}</p>
+          )}
+          {area.content && (
+            <RichText data={area.content as SerializedEditorState} className="mt-8" />
+          )}
+        </Container>
+      </Section>
       {isDraft && <PreviewBanner currentPath={`/service-areas/${slug}`} />}
     </main>
   )

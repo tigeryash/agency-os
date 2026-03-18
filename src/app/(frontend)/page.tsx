@@ -4,7 +4,6 @@ import { draftMode } from 'next/headers'
 import { buildMetadata } from '@/lib/metadata'
 import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { BlockRenderer } from '@/components/blocks'
-import { LayoutLivePreview } from '@/components/live-preview/LayoutLivePreview'
 import { PreviewBanner } from '@/components/PreviewBanner'
 
 type MetaGroup = {
@@ -50,14 +49,7 @@ export default async function HomePage() {
 
   return (
     <main>
-      {isDraft ? (
-        <LayoutLivePreview
-          initialData={page}
-          serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
-        />
-      ) : (
-        <BlockRenderer blocks={layout} />
-      )}
+      <BlockRenderer blocks={layout} />
       {isDraft && <PreviewBanner currentPath="/" />}
     </main>
   )
