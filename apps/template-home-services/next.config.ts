@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [],
   },
+  transpilePackages: ['@agency-os/ui', '@agency-os/shared'],
 }
 
 export default withPayload(nextConfig)
