@@ -53,29 +53,47 @@ export default async function ServiceAreaPage({ params }: Args) {
   const area = await getServiceArea(slug, isDraft)
   if (!area) notFound()
 
+  const areaContent = (
+    <Section>
+      <Container size="narrow">
+        <Heading level={1}>{area.title}</Heading>
+        {area.description && (
+          <p className="mt-4 text-foreground-muted">{area.description as string}</p>
+        )}
+        {area.content && (
+          <RichText data={area.content as SerializedEditorState} className="mt-8" />
+        )}
+      </Container>
+    </Section>
+  )
+
   return (
     <main>
-      <LivePreviewWrapper
-        initialData={area}
-        serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
-      >
-        {(data) => {
-          const live = data as typeof area
-          return (
-            <Section>
-              <Container size="narrow">
-                <Heading level={1}>{live.title}</Heading>
-                {live.description && (
-                  <p className="mt-4 text-foreground-muted">{live.description as string}</p>
-                )}
-                {live.content && (
-                  <RichText data={live.content as SerializedEditorState} className="mt-8" />
-                )}
-              </Container>
-            </Section>
-          )
-        }}
-      </LivePreviewWrapper>
+      {isDraft ? (
+        <LivePreviewWrapper
+          initialData={area}
+          serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
+        >
+          {(data) => {
+            const live = data as typeof area
+            return (
+              <Section>
+                <Container size="narrow">
+                  <Heading level={1}>{live.title}</Heading>
+                  {live.description && (
+                    <p className="mt-4 text-foreground-muted">{live.description as string}</p>
+                  )}
+                  {live.content && (
+                    <RichText data={live.content as SerializedEditorState} className="mt-8" />
+                  )}
+                </Container>
+              </Section>
+            )
+          }}
+        </LivePreviewWrapper>
+      ) : (
+        areaContent
+      )}
       {isDraft && <PreviewBanner currentPath={`/service-areas/${slug}`} />}
     </main>
   )

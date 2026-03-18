@@ -51,29 +51,47 @@ export default async function ServicePage({ params }: Args) {
   const service = await getService(slug, isDraft)
   if (!service) notFound()
 
+  const serviceContent = (
+    <Section>
+      <Container size="narrow">
+        <Heading level={1}>{service.title}</Heading>
+        {service.summary && (
+          <p className="mt-4 text-foreground-muted text-h4">{service.summary as string}</p>
+        )}
+        {service.content && (
+          <RichText data={service.content as SerializedEditorState} className="mt-8" />
+        )}
+      </Container>
+    </Section>
+  )
+
   return (
     <main>
-      <LivePreviewWrapper
-        initialData={service}
-        serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
-      >
-        {(data) => {
-          const live = data as typeof service
-          return (
-            <Section>
-              <Container size="narrow">
-                <Heading level={1}>{live.title}</Heading>
-                {live.summary && (
-                  <p className="mt-4 text-foreground-muted text-h4">{live.summary as string}</p>
-                )}
-                {live.content && (
-                  <RichText data={live.content as SerializedEditorState} className="mt-8" />
-                )}
-              </Container>
-            </Section>
-          )
-        }}
-      </LivePreviewWrapper>
+      {isDraft ? (
+        <LivePreviewWrapper
+          initialData={service}
+          serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
+        >
+          {(data) => {
+            const live = data as typeof service
+            return (
+              <Section>
+                <Container size="narrow">
+                  <Heading level={1}>{live.title}</Heading>
+                  {live.summary && (
+                    <p className="mt-4 text-foreground-muted text-h4">{live.summary as string}</p>
+                  )}
+                  {live.content && (
+                    <RichText data={live.content as SerializedEditorState} className="mt-8" />
+                  )}
+                </Container>
+              </Section>
+            )
+          }}
+        </LivePreviewWrapper>
+      ) : (
+        serviceContent
+      )}
       {isDraft && <PreviewBanner currentPath={`/services/${slug}`} />}
     </main>
   )

@@ -50,17 +50,23 @@ export default async function Page({ params }: Args) {
   const page = await getPage(slug, isDraft)
   if (!page) notFound()
 
+  const layout = (page.layout ?? []) as Array<{ blockType: string; id?: string; [key: string]: unknown }>
+
   return (
     <main>
-      <LivePreviewWrapper
-        initialData={page}
-        serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
-      >
-        {(data) => {
-          const liveLayout = ((data as typeof page).layout ?? []) as Array<{ blockType: string; id?: string; [key: string]: unknown }>
-          return <BlockRenderer blocks={liveLayout} />
-        }}
-      </LivePreviewWrapper>
+      {isDraft ? (
+        <LivePreviewWrapper
+          initialData={page}
+          serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
+        >
+          {(data) => {
+            const liveLayout = ((data as typeof page).layout ?? []) as Array<{ blockType: string; id?: string; [key: string]: unknown }>
+            return <BlockRenderer blocks={liveLayout} />
+          }}
+        </LivePreviewWrapper>
+      ) : (
+        <BlockRenderer blocks={layout} />
+      )}
       {isDraft && <PreviewBanner currentPath={`/${slug}`} />}
     </main>
   )
