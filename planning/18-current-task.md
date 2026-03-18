@@ -3,17 +3,30 @@
 This file is the small, high-signal handoff for the active implementation step.
 
 ## Active Task
-Decide next step after completing the first orchestrated test wave.
+Implement Payload live preview and draft workflow.
 
 ## Goal
-Choose and scope the next bounded task: sample-lead testing with the rubric, further agent spec iteration, or return to starter site implementation.
+Add live preview support and a draft/publish workflow to the Payload CMS starter so content editors can preview changes before publishing. This is the first implementation task using the full superpowers ceremony (brainstorming → spec → plan → TDD → code review).
 
 ## Read Only These Files First
 1. `CLAUDE.md`
 2. `18-current-task.md`
-3. `planning/04-session-handoff.md`
+3. `planning/29-superpowers-integration-spec.md`
+4. `planning/17-starter-implementation-spec.md`
+5. `planning/12-starter-architecture.md`
 
 ## Already Completed
+
+### Sample Lead Tests
+1. Ran 5 fictional leads through Research → Qualification → Outreach pipeline
+2. Validated rubric, thresholds, overrides, tier heuristics, and outreach framework
+3. Documented 6 gaps and 5 recommendations in `planning/28-sample-lead-tests.md`
+4. No rubric changes needed — pipeline produces sensible results
+
+### Superpowers Integration
+1. Defined integration spec in `planning/29-superpowers-integration-spec.md`
+2. Added Superpowers Integration section to `CLAUDE.md`
+3. Added forward pointer in `planning/13-engineering-quality.md`
 
 ### Front-Office MVP Standard
 1. Defined the qualification rubric in `planning/25-front-office-mvp-standard.md` Part 1
@@ -50,17 +63,16 @@ Choose and scope the next bounded task: sample-lead testing with the rubric, fur
 - Unit tests: 15/15 passed
 
 ## In Scope
-Pending user direction. Options:
-
-1. Test the front-office qualification rubric on sample leads
-2. Iterate on Wave 1 agent specs if gaps appear during sample testing
-3. Return to starter site implementation work
+1. Brainstorm and spec the live preview + draft workflow feature
+2. Write implementation plan
+3. Build using TDD
+4. Code review after implementation
 
 ## Out Of Scope
-1. Reworking CI or deployment docs unless a new failure appears
-2. Reopening completed schema reconciliation without a concrete bug or requirement
-3. Pricing, CRM selection, branding, or marketing-direction decisions unless explicitly requested
-4. Building automation code or external integrations in this planning step
+1. Analytics baseline (queued as backlog item 2 in `planning/backlog.md`)
+2. Reworking CI or deployment docs unless a new failure appears
+3. Pricing, CRM selection, branding, or marketing-direction decisions
+4. Front-office pipeline changes unless a concrete bug or requirement appears
 
 ## Explicit Deferrals
 1. Docker / containerization — not needed for V1
@@ -73,9 +85,8 @@ Pending user direction. Options:
 1. Define the shared business schema boundaries — completed in `planning/20-shared-business-schema.md`
 2. Reconcile implemented Payload collections and globals against the shared schema — completed in `planning/21-payload-schema-reconciliation.md`
 3. Implement highest-priority reconciliation actions — completed (status alignment, lead ownership, CTA inheritance, SEO fields)
-4. Define and run the first orchestrated test wave — completed. Research, Qualification, and Outreach agent specs retrofitted to the orchestration-aware template with clean ownership boundaries and no scope drift.
+4. Define and run the first orchestrated test wave — completed
+5. Test the front-office qualification rubric on sample leads — completed in `planning/28-sample-lead-tests.md`. Rubric validated, no changes needed, 6 gaps documented with 5 recommendations.
 
 ## Next Task After This
-1. Test the front-office qualification rubric on sample leads, or
-2. Iterate on agent specs if gaps appear, or
-3. Return to starter site implementation
+1. Analytics baseline (events, attribution fields on leads, admin dashboard) — see `planning/backlog.md`

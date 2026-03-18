@@ -32,6 +32,7 @@ This file defines the deployment requirements, environment variables, and secret
 
 | Variable | Description | Behavior When Missing |
 |---|---|---|
+| `PREVIEW_SECRET` | Secret token required to access the draft preview route (`/preview`). Must be a random string, unique per environment. Generate with `openssl rand -hex 32`. | Preview route returns 403 for all requests |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Turnstile widget site key | Turnstile widget does not render |
 | `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile server verification key | Server-side verification is skipped |
 | `UPSTASH_REDIS_REST_URL` | Upstash Redis REST endpoint | Rate limiting is disabled |
@@ -82,6 +83,7 @@ Before any client site goes live:
 - [ ] `PAYLOAD_SECRET` is a unique, random 32+ character string
 - [ ] `DATABASE_URI` points to a production database (not dev/CI)
 - [ ] `NEXT_PUBLIC_SITE_URL` matches the production domain
+- [ ] `PREVIEW_SECRET` is set to a unique, random string (different from dev/staging)
 - [ ] Turnstile keys are configured for the production domain
 - [ ] Upstash Redis is provisioned and configured
 - [ ] Admin user is created with a strong password

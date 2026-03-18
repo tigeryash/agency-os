@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation'
+import { draftMode } from 'next/headers'
 import { buildMetadata } from '@/lib/metadata'
 import { getPayloadClient, getPublishedWhere } from '@/lib/payload'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading } from '@/components/ui'
+import { PreviewBanner } from '@/components/PreviewBanner'
 import Link from 'next/link'
 
 export async function generateMetadata() {
@@ -16,10 +18,12 @@ export async function generateMetadata() {
 export default async function ServiceAreasPage() {
   if (!isFeatureEnabled('serviceAreas')) notFound()
 
+  const { isEnabled: isDraft } = await draftMode()
   const payload = await getPayloadClient()
   const { docs: areas } = await payload.find({
     collection: 'service-areas',
-    where: getPublishedWhere(),
+    where: getPublishedWhere(isDraft),
+    draft: isDraft,
     sort: 'title',
   })
 
@@ -44,6 +48,7 @@ export default async function ServiceAreasPage() {
           </div>
         </Container>
       </Section>
+      {isDraft && <PreviewBanner currentPath="/service-areas" />}
     </main>
   )
 }

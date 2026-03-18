@@ -9,6 +9,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // Mock @payload-config so pure helpers can be unit-tested without Payload's full init
+      '@payload-config': path.resolve(__dirname, 'src/tests/__mocks__/payload-config.ts'),
     },
   },
 })

@@ -1,9 +1,12 @@
 import { notFound } from 'next/navigation'
+import { draftMode } from 'next/headers'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import { buildMetadata } from '@/lib/metadata'
 import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading, RichText } from '@/components/ui'
+import { LivePreviewWrapper } from '@/components/LivePreviewWrapper'
+import { PreviewBanner } from '@/components/PreviewBanner'
 import type { Metadata } from 'next'
 
 type Args = { params: Promise<{ slug: string }> }
@@ -15,11 +18,12 @@ type MetaGroup = {
   canonicalUrl?: string
 }
 
-async function getServiceArea(slug: string) {
+async function getServiceArea(slug: string, draft: boolean = false) {
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: 'service-areas',
-    where: getPublishedSlugWhere(slug),
+    where: getPublishedSlugWhere(slug, draft),
+    draft,
     limit: 1,
   })
   return result.docs[0] ?? null
@@ -27,7 +31,8 @@ async function getServiceArea(slug: string) {
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug } = await params
-  const area = await getServiceArea(slug)
+  const { isEnabled: isDraft } = await draftMode()
+  const area = await getServiceArea(slug, isDraft)
   if (!area) return {}
 
   const meta = area.meta as MetaGroup | undefined
@@ -44,22 +49,34 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
 export default async function ServiceAreaPage({ params }: Args) {
   if (!isFeatureEnabled('serviceAreas')) notFound()
   const { slug } = await params
-  const area = await getServiceArea(slug)
+  const { isEnabled: isDraft } = await draftMode()
+  const area = await getServiceArea(slug, isDraft)
   if (!area) notFound()
 
   return (
     <main>
-      <Section>
-        <Container size="narrow">
-          <Heading level={1}>{area.title}</Heading>
-          {area.description && (
-            <p className="mt-4 text-foreground-muted">{area.description as string}</p>
-          )}
-          {area.content && (
-            <RichText data={area.content as SerializedEditorState} className="mt-8" />
-          )}
-        </Container>
-      </Section>
+      <LivePreviewWrapper
+        initialData={area}
+        serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
+      >
+        {(data) => {
+          const live = data as typeof area
+          return (
+            <Section>
+              <Container size="narrow">
+                <Heading level={1}>{live.title}</Heading>
+                {live.description && (
+                  <p className="mt-4 text-foreground-muted">{live.description as string}</p>
+                )}
+                {live.content && (
+                  <RichText data={live.content as SerializedEditorState} className="mt-8" />
+                )}
+              </Container>
+            </Section>
+          )
+        }}
+      </LivePreviewWrapper>
+      {isDraft && <PreviewBanner currentPath={`/service-areas/${slug}`} />}
     </main>
   )
 }

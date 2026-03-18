@@ -109,7 +109,7 @@ Every meaningful implementation should be reviewed against:
 
 Useful support layers:
 
-1. `superpowers` for implementation planning, review flow, and verification discipline
+1. `superpowers` for implementation planning, review flow, and verification discipline — see `planning/29-superpowers-integration-spec.md` for the full integration spec
 2. local `react-doctor` workflow after React-heavy changes
 3. Payload skill for collection design, access rules, hooks, and CMS correctness
 

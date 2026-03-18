@@ -6,10 +6,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const payload = await getPayloadClient()
 
   const [pages, services, serviceAreas, posts] = await Promise.all([
-    payload.find({ collection: 'pages', where: getPublishedWhere(), limit: 1000 }),
-    payload.find({ collection: 'services', where: getPublishedWhere(), limit: 1000 }),
-    payload.find({ collection: 'service-areas', where: getPublishedWhere(), limit: 1000 }),
-    payload.find({ collection: 'posts', where: getPublishedWhere(), limit: 1000 }),
+    payload.find({ collection: 'pages', where: getPublishedWhere(false), limit: 1000 }),
+    payload.find({ collection: 'services', where: getPublishedWhere(false), limit: 1000 }),
+    payload.find({ collection: 'service-areas', where: getPublishedWhere(false), limit: 1000 }),
+    payload.find({ collection: 'posts', where: getPublishedWhere(false), limit: 1000 }),
   ])
 
   const entries: MetadataRoute.Sitemap = [

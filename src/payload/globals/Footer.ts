@@ -2,6 +2,9 @@ import type { GlobalConfig } from 'payload'
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
+  versions: {
+    drafts: true,
+  },
   fields: [
     {
       name: 'navGroups',

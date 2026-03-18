@@ -144,6 +144,36 @@ When in doubt:
 3. keep planning and implementation separated when the target is still moving
 4. optimize for clean handoffs and validated merges, not raw agent count
 
+## Superpowers Integration
+
+Use superpowers as an engineering workflow layer for planning, implementation, code review, and verification. It operates inside the existing control structure, not as a parallel system.
+
+### Mode Selection
+
+The active task in `18-current-task.md` determines which mode activates:
+
+1. **Planning/validation work** — work directly per the task definition. Use brainstorming only if the scope is unclear. No spec, no plan, no TDD.
+2. **Implementation work** — full ceremony: brainstorming → spec → plan → TDD → code review → code simplifier.
+3. **Bug fix or small change** — TDD and code review. Skip brainstorming and spec. For changes under ~50 lines or scoped to a single file, brainstorming and spec may be skipped with user approval.
+
+### Artifact Location
+
+All specs and plans go in `planning/NN-*.md` using the existing numbered convention. Specs and plans for the same feature share a common slug and are close in numbering.
+
+### Skill Invocation Order
+
+When implementation mode is active: brainstorming → spec → writing-plans → plan → TDD → code review → code simplifier.
+
+### Override Rule
+
+`18-current-task.md` always determines the active scope. Superpowers skills operate within that scope, not independently. If a planning task evolves into implementation, update `18-current-task.md` before switching modes.
+
+### Spec Review Policy
+
+Specs go through an automated review loop (up to 5 iterations) before user approval. Critical and Important issues must be fixed before presenting the spec.
+
+See `planning/29-superpowers-integration-spec.md` for the full integration spec.
+
 ## Done Condition For Current Task
 This step is complete when:
 
@@ -189,4 +219,6 @@ Read these only when needed for the current task.
 - `planning/25-front-office-mvp-standard.md` — operational qualification rubric, outreach framework, and handoff contract for Research → Qualification → Outreach
 - `planning/26-orchestration-policy.md` — detailed multi-agent execution policy, worker task packet, merge checklist, and escalation protocol
 - `planning/27-orchestrated-test-wave.md` — first bounded orchestration wave for testing multi-agent coordination on Wave 1 agent specs
+- `planning/28-sample-lead-tests.md` — sample lead test results validating the qualification rubric, handoff contract, and outreach framework across five scenarios
+- `planning/29-superpowers-integration-spec.md` — superpowers workflow integration spec, mode selection, artifact conventions, and skill invocation order
 - `planning/agents/` — per-agent specs
