@@ -2,12 +2,26 @@ import type { CollectionConfig } from 'payload'
 import { slugFields } from '@/payload/fields/slugFields'
 import { seoFields } from '@/payload/fields/seoFields'
 import { publicationFields } from '@/payload/fields/publicationFields'
+import { publishedOrAuthenticated } from '@/payload/access/publishedOrAuthenticated'
+import { generatePreviewUrl } from '@/lib/previewUrl'
 
 export const ServiceAreas: CollectionConfig = {
   slug: 'service-areas',
+  access: {
+    read: publishedOrAuthenticated,
+  },
+  versions: {
+    drafts: {
+      autosave: true,
+      schedulePublish: false,
+      validate: false,
+    },
+    maxPerDoc: 10,
+  },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'slug', 'areaType', 'status', 'updatedAt'],
+    defaultColumns: ['title', 'slug', 'areaType', '_status', 'updatedAt'],
+    preview: (doc) => generatePreviewUrl({ slug: doc.slug as string, collection: 'service-areas' }),
   },
   fields: [
     {
