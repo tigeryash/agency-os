@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation'
+import { draftMode } from 'next/headers'
 import { buildMetadata } from '@/lib/metadata'
 import { getPayloadClient, getPublishedWhere } from '@/lib/payload'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading } from '@/components/ui'
+import { PreviewBanner } from '@/components/PreviewBanner'
 import Link from 'next/link'
 
 export async function generateMetadata() {
@@ -16,10 +18,12 @@ export async function generateMetadata() {
 export default async function BlogPage() {
   if (!isFeatureEnabled('blog')) notFound()
 
+  const { isEnabled: isDraft } = await draftMode()
   const payload = await getPayloadClient()
   const { docs: posts } = await payload.find({
     collection: 'posts',
-    where: getPublishedWhere(),
+    where: getPublishedWhere(isDraft),
+    draft: isDraft,
     sort: '-publishedAt',
   })
 
@@ -44,6 +48,7 @@ export default async function BlogPage() {
           </div>
         </Container>
       </Section>
+      {isDraft && <PreviewBanner currentPath="/blog" />}
     </main>
   )
 }
