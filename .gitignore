@@ -12,6 +12,7 @@ build/
 .env
 .env.local
 .env.*.local
+apps/*/.env
 
 # misc
 .DS_Store
@@ -25,7 +26,7 @@ npm-debug.log*
 next-env.d.ts
 
 # payload
-src/payload-types.ts
+**/payload-types.ts
 
 # playwright
 test-results/
