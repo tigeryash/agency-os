@@ -1,11 +1,10 @@
 import type { Field } from 'payload'
 
 /**
- * Shared publication status fields for all public content collections.
- * Maps to the "Publication Status" field group in planning/20-shared-business-schema.md.
- *
- * Status values: draft, published, archived.
- * Display rule: only "published" content with publishedAt in the past appears on the frontend.
+ * Publication Status field group.
+ * Maps to the "Publication Status" group in planning/20-shared-business-schema.md.
+ * The `_status` field (draft/published) is managed by Payload's drafts system automatically.
+ * The `archived` boolean hides content from the frontend without removing it from version history.
  */
 export const publicationFields: Field[] = [
   {
@@ -13,20 +12,19 @@ export const publicationFields: Field[] = [
     type: 'date',
     admin: {
       position: 'sidebar',
+      date: {
+        pickerAppearance: 'dayAndTime',
+      },
       description: 'Date this content goes live. Leave empty to publish immediately.',
     },
   },
   {
-    name: 'status',
-    type: 'select',
-    defaultValue: 'draft',
-    options: [
-      { label: 'Draft', value: 'draft' },
-      { label: 'Published', value: 'published' },
-      { label: 'Archived', value: 'archived' },
-    ],
+    name: 'archived',
+    type: 'checkbox',
+    defaultValue: false,
     admin: {
       position: 'sidebar',
+      description: 'Archived content is hidden from the frontend but remains published in the version history.',
     },
   },
 ]
