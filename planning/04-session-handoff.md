@@ -29,6 +29,8 @@ Current verified baseline:
 9. deployment and secret-handling rules are documented
 10. CI provisions its own Postgres service, seeds the app, and runs build plus e2e without relying on a GitHub `DATABASE_URI` secret
 11. canonical `leads` and `opportunities` collections exist in Payload
+12. front-office qualification rubric validated on 5 sample leads — no rubric changes needed
+13. superpowers integration spec defined and applied to CLAUDE.md
 
 Planning is still active for unresolved business and architecture decisions, but do not assume the codebase is unimplemented.
 
@@ -54,15 +56,28 @@ Planning is still active for unresolved business and architecture decisions, but
 
 ## Recommended Next Conversation Prompt
 
-"Review the current repo and planning docs together. Confirm the locked decisions, summarize what is already implemented, identify the next missing decision or delivery gap, and then work only on that step."
+"Continue with the active task in 18-current-task.md. The current task is implementing Payload live preview and draft workflow using the full superpowers ceremony."
 
 ## Recommended Immediate Next Task
 
-The first orchestrated test wave has been completed successfully. Choose one of:
+Implement Payload live preview and draft workflow. This is the first implementation task using the full superpowers ceremony (brainstorming → spec → plan → TDD → code review).
 
-1. test the front-office qualification rubric on sample leads
-2. iterate on Wave 1 agent specs if gaps appear during sample testing
-3. return to starter site implementation work
+## Backlog
+
+See `planning/backlog.md` for queued tasks:
+
+1. Payload live preview and draft workflow (current)
+2. Analytics baseline (events, attribution fields on leads, admin dashboard)
+
+## Superpowers Integration
+
+The repo now has a superpowers integration spec (`planning/29-superpowers-integration-spec.md`) that defines three workflow modes:
+
+1. Planning/validation work → work directly, no ceremony
+2. Implementation work → brainstorming → spec → plan → TDD → code review
+3. Bug fixes → TDD + code review
+
+All specs and plans go in `planning/NN-*.md` using the existing numbered convention.
 
 ## Multi-Agent Coordination Status
 
