@@ -29,11 +29,11 @@ export function generateLivePreviewUrl({
   data,
   collectionConfig,
 }: {
-  data: Record<string, any>
+  data: Record<string, unknown>
   collectionConfig?: { slug: string } | null
 }): string {
   if (!collectionConfig) return '/'
 
   const pathFn = collectionPathMap[collectionConfig.slug]
-  return pathFn ? pathFn(data.slug) : '/'
+  return pathFn ? pathFn(data.slug as string) : '/'
 }

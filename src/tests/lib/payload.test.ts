@@ -5,10 +5,12 @@ describe('getPublishedWhere', () => {
   it('returns published + not-archived + publishedAt filter when draft is false', () => {
     const where = getPublishedWhere(false)
     expect(where).toHaveProperty('and')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const conditions = (where as any).and
     expect(conditions).toContainEqual({ _status: { equals: 'published' } })
     expect(conditions).toContainEqual({ archived: { equals: false } })
     // Should include publishedAt date-gating
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const publishedAtCondition = conditions.find((c: any) => c.or)
     expect(publishedAtCondition).toBeTruthy()
   })
@@ -27,6 +29,7 @@ describe('getPublishedWhere', () => {
 describe('getPublishedSlugWhere', () => {
   it('returns slug + published filter when draft is false', () => {
     const where = getPublishedSlugWhere('about', false)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const conditions = (where as any).and
     expect(conditions).toContainEqual({ slug: { equals: 'about' } })
     expect(conditions).toContainEqual({ _status: { equals: 'published' } })

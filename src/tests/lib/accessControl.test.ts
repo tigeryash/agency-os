@@ -3,11 +3,13 @@ import { publishedOrAuthenticated } from '@/payload/access/publishedOrAuthentica
 
 describe('publishedOrAuthenticated', () => {
   it('returns status filter when no user', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = publishedOrAuthenticated({ req: { user: null } } as any)
     expect(result).toEqual({ _status: { equals: 'published' } })
   })
 
   it('returns true when user is authenticated', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = publishedOrAuthenticated({ req: { user: { id: '1' } } } as any)
     expect(result).toBe(true)
   })
