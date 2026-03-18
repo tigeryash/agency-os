@@ -5,7 +5,7 @@ import { buildMetadata } from '@/lib/metadata'
 import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading, RichText } from '@/components/ui'
-import { LivePreviewWrapper } from '@/components/LivePreviewWrapper'
+import { PostLivePreview } from '@/components/live-preview/PostLivePreview'
 import { PreviewBanner } from '@/components/PreviewBanner'
 import type { Metadata } from 'next'
 
@@ -53,40 +53,22 @@ export default async function PostPage({ params }: Args) {
   const post = await getPost(slug, isDraft)
   if (!post) notFound()
 
-  const postContent = (
-    <Section>
-      <Container size="narrow">
-        <Heading level={1}>{post.title}</Heading>
-        {post.content && (
-          <RichText data={post.content as SerializedEditorState} className="mt-8" />
-        )}
-      </Container>
-    </Section>
-  )
-
   return (
     <main>
       {isDraft ? (
-        <LivePreviewWrapper
+        <PostLivePreview
           initialData={post}
           serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
-        >
-          {(data) => {
-            const live = data as typeof post
-            return (
-              <Section>
-                <Container size="narrow">
-                  <Heading level={1}>{live.title}</Heading>
-                  {live.content && (
-                    <RichText data={live.content as SerializedEditorState} className="mt-8" />
-                  )}
-                </Container>
-              </Section>
-            )
-          }}
-        </LivePreviewWrapper>
+        />
       ) : (
-        postContent
+        <Section>
+          <Container size="narrow">
+            <Heading level={1}>{post.title}</Heading>
+            {post.content && (
+              <RichText data={post.content as SerializedEditorState} className="mt-8" />
+            )}
+          </Container>
+        </Section>
       )}
       {isDraft && <PreviewBanner currentPath={`/blog/${slug}`} />}
     </main>

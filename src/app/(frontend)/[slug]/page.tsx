@@ -3,7 +3,7 @@ import { draftMode } from 'next/headers'
 import { buildMetadata } from '@/lib/metadata'
 import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { BlockRenderer } from '@/components/blocks'
-import { LivePreviewWrapper } from '@/components/LivePreviewWrapper'
+import { LayoutLivePreview } from '@/components/live-preview/LayoutLivePreview'
 import { PreviewBanner } from '@/components/PreviewBanner'
 import type { Metadata } from 'next'
 
@@ -55,15 +55,10 @@ export default async function Page({ params }: Args) {
   return (
     <main>
       {isDraft ? (
-        <LivePreviewWrapper
+        <LayoutLivePreview
           initialData={page}
           serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
-        >
-          {(data) => {
-            const liveLayout = ((data as typeof page).layout ?? []) as Array<{ blockType: string; id?: string; [key: string]: unknown }>
-            return <BlockRenderer blocks={liveLayout} />
-          }}
-        </LivePreviewWrapper>
+        />
       ) : (
         <BlockRenderer blocks={layout} />
       )}
