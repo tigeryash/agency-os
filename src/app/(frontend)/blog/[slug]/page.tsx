@@ -1,9 +1,12 @@
 import { notFound } from 'next/navigation'
+import { draftMode } from 'next/headers'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import { buildMetadata } from '@/lib/metadata'
 import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { isFeatureEnabled } from '@/lib/tiers'
 import { Container, Section, Heading, RichText } from '@/components/ui'
+import { LivePreviewWrapper } from '@/components/LivePreviewWrapper'
+import { PreviewBanner } from '@/components/PreviewBanner'
 import type { Metadata } from 'next'
 
 type Args = { params: Promise<{ slug: string }> }
@@ -15,11 +18,12 @@ type MetaGroup = {
   canonicalUrl?: string
 }
 
-async function getPost(slug: string) {
+async function getPost(slug: string, draft: boolean = false) {
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: 'posts',
-    where: getPublishedSlugWhere(slug),
+    where: getPublishedSlugWhere(slug, draft),
+    draft,
     limit: 1,
   })
   return result.docs[0] ?? null
@@ -27,7 +31,8 @@ async function getPost(slug: string) {
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug } = await params
-  const post = await getPost(slug)
+  const { isEnabled: isDraft } = await draftMode()
+  const post = await getPost(slug, isDraft)
   if (!post) return {}
 
   const meta = post.meta as MetaGroup | undefined
@@ -44,19 +49,31 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
 export default async function PostPage({ params }: Args) {
   if (!isFeatureEnabled('blog')) notFound()
   const { slug } = await params
-  const post = await getPost(slug)
+  const { isEnabled: isDraft } = await draftMode()
+  const post = await getPost(slug, isDraft)
   if (!post) notFound()
 
   return (
     <main>
-      <Section>
-        <Container size="narrow">
-          <Heading level={1}>{post.title}</Heading>
-          {post.content && (
-            <RichText data={post.content as SerializedEditorState} className="mt-8" />
-          )}
-        </Container>
-      </Section>
+      <LivePreviewWrapper
+        initialData={post}
+        serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
+      >
+        {(data) => {
+          const live = data as typeof post
+          return (
+            <Section>
+              <Container size="narrow">
+                <Heading level={1}>{live.title}</Heading>
+                {live.content && (
+                  <RichText data={live.content as SerializedEditorState} className="mt-8" />
+                )}
+              </Container>
+            </Section>
+          )
+        }}
+      </LivePreviewWrapper>
+      {isDraft && <PreviewBanner currentPath={`/blog/${slug}`} />}
     </main>
   )
 }
