@@ -10,6 +10,7 @@ export async function GET(request: Request): Promise<Response> {
 
   const path = searchParams.get('path')
   const collection = searchParams.get('collection') as CollectionSlug
+  const global = searchParams.get('global')
   const slug = searchParams.get('slug')
   const previewSecret = searchParams.get('previewSecret')
 
@@ -17,7 +18,10 @@ export async function GET(request: Request): Promise<Response> {
     return new Response('You are not allowed to preview this page', { status: 403 })
   }
 
-  if (!path || !collection || !slug) {
+  const hasCollectionTarget = Boolean(collection && slug)
+  const hasGlobalTarget = Boolean(global)
+
+  if (!path || (!hasCollectionTarget && !hasGlobalTarget)) {
     return new Response('Missing required search params', { status: 404 })
   }
 

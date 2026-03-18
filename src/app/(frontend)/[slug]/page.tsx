@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation'
 import { draftMode } from 'next/headers'
+import { PageLivePreview } from '@/components/PageLivePreview'
 import { buildMetadata } from '@/lib/metadata'
+import { hydrateBlocksForRender } from '@/lib/hydrateBlocksForRender'
+import { isLivePreviewEnabled } from '@/lib/livePreview'
 import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { BlockRenderer } from '@/components/blocks'
 import { PreviewBanner } from '@/components/PreviewBanner'
@@ -27,8 +30,7 @@ async function getPage(slug: string, draft: boolean = false) {
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
-  const { slug } = await params
-  const { isEnabled: isDraft } = await draftMode()
+  const [{ slug }, { isEnabled: isDraft }] = await Promise.all([params, draftMode()])
   const page = await getPage(slug, isDraft)
   if (!page) return {}
 
@@ -43,17 +45,34 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   })
 }
 
-export default async function Page({ params }: Args) {
-  const { slug } = await params
-  const { isEnabled: isDraft } = await draftMode()
+export default async function Page({
+  params,
+  searchParams,
+}: Args & {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const [{ slug }, { isEnabled: isDraft }, resolvedSearchParams] = await Promise.all([
+    params,
+    draftMode(),
+    searchParams ?? Promise.resolve(undefined),
+  ])
+  const isLivePreview = isLivePreviewEnabled(resolvedSearchParams)
   const page = await getPage(slug, isDraft)
   if (!page) notFound()
 
-  const layout = (page.layout ?? []) as Array<{ blockType: string; id?: string; [key: string]: unknown }>
+  const layout = await hydrateBlocksForRender(
+    (page.layout ?? []) as Array<{ blockType: string; id?: string; [key: string]: unknown }>,
+    isDraft,
+  )
+
+  const pageWithLayout = {
+    ...page,
+    layout,
+  }
 
   return (
     <main>
-      <BlockRenderer blocks={layout} />
+      {isLivePreview ? <PageLivePreview page={pageWithLayout} /> : <BlockRenderer blocks={layout} />}
       {isDraft && <PreviewBanner currentPath={`/${slug}`} />}
     </main>
   )
