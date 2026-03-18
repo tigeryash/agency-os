@@ -1,4 +1,5 @@
 import { appendLivePreviewParam } from '@/lib/livePreview'
+import { getPreviewSecret } from '@/lib/previewSecret'
 
 const collectionPathMap: Record<string, (slug: string) => string> = {
   pages: (slug) => (slug === 'home' ? '/' : `/${slug}`),
@@ -21,7 +22,7 @@ export function generatePreviewUrl({
     slug,
     collection,
     path,
-    previewSecret: process.env.PREVIEW_SECRET || '',
+    previewSecret: getPreviewSecret() || '',
   })
 
   return `/preview?${params.toString()}`
@@ -42,7 +43,7 @@ export function generateLivePreviewUrl({
 
   const params = new URLSearchParams({
     path: appendLivePreviewParam(path),
-    previewSecret: process.env.PREVIEW_SECRET || '',
+    previewSecret: getPreviewSecret() || '',
   })
 
   if (collectionConfig) {
