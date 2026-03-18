@@ -3,6 +3,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { generateLivePreviewUrl } from '@/lib/previewUrl'
 
 import { Pages } from '@/payload/collections/Pages'
 import { Services } from '@/payload/collections/Services'
@@ -29,6 +30,12 @@ export default buildConfig({
   collections: [Pages, Services, ServiceAreas, Reviews, Posts, Media, Leads, Opportunities, Users],
   admin: {
     user: Users.slug,
+    livePreview: {
+      url: ({ data, collectionConfig }) =>
+        generateLivePreviewUrl({ data, collectionConfig }),
+      collections: ['pages', 'services', 'posts', 'service-areas'],
+      globals: ['header', 'footer', 'site-settings'],
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },
