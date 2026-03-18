@@ -5,10 +5,12 @@ export async function getPayloadClient() {
   return getPayload({ config })
 }
 
-export function getPublishedWhere(): Where {
+export function getPublishedWhere(draft: boolean = false): Where {
+  if (draft) return {}
   return {
     and: [
-      { status: { equals: 'published' } } as Where,
+      { _status: { equals: 'published' } } as Where,
+      { archived: { equals: false } } as Where,
       {
         or: [
           { publishedAt: { less_than_equal: new Date().toISOString() } } as Where,
@@ -19,11 +21,14 @@ export function getPublishedWhere(): Where {
   }
 }
 
-export function getPublishedSlugWhere(slug: string): Where {
+export function getPublishedSlugWhere(slug: string, draft: boolean = false): Where {
+  if (draft) {
+    return { slug: { equals: slug } }
+  }
   return {
     and: [
       { slug: { equals: slug } } as Where,
-      getPublishedWhere(),
+      ...((getPublishedWhere(false) as any).and || []),
     ],
   }
 }
