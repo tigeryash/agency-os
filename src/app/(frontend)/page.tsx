@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation'
 import { draftMode } from 'next/headers'
 
+import { PageLivePreview } from '@/components/PageLivePreview'
 import { buildMetadata } from '@/lib/metadata'
+import { hydrateBlocksForRender } from '@/lib/hydrateBlocksForRender'
+import { isLivePreviewEnabled } from '@/lib/livePreview'
 import { getPayloadClient, getPublishedSlugWhere } from '@/lib/payload'
 import { BlockRenderer } from '@/components/blocks'
-import { LivePreviewWrapper } from '@/components/LivePreviewWrapper'
 import { PreviewBanner } from '@/components/PreviewBanner'
 
 type MetaGroup = {
@@ -27,7 +29,7 @@ async function getHomePage(draft: boolean = false) {
 }
 
 export async function generateMetadata() {
-  const { isEnabled: isDraft } = await draftMode()
+  const [{ isEnabled: isDraft }] = await Promise.all([draftMode()])
   const page = await getHomePage(isDraft)
   const meta = page?.meta as MetaGroup | undefined
 
@@ -41,22 +43,32 @@ export async function generateMetadata() {
   })
 }
 
-export default async function HomePage() {
-  const { isEnabled: isDraft } = await draftMode()
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const [{ isEnabled: isDraft }, resolvedSearchParams] = await Promise.all([
+    draftMode(),
+    searchParams ?? Promise.resolve(undefined),
+  ])
+  const isLivePreview = isLivePreviewEnabled(resolvedSearchParams)
   const page = await getHomePage(isDraft)
   if (!page) notFound()
 
+  const layout = await hydrateBlocksForRender(
+    (page.layout ?? []) as Array<{ blockType: string; id?: string; [key: string]: unknown }>,
+    isDraft,
+  )
+
+  const pageWithLayout = {
+    ...page,
+    layout,
+  }
+
   return (
     <main>
-      <LivePreviewWrapper
-        initialData={page}
-        serverURL={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}
-      >
-        {(data) => {
-          const liveLayout = ((data as typeof page).layout ?? []) as Array<{ blockType: string; id?: string; [key: string]: unknown }>
-          return <BlockRenderer blocks={liveLayout} />
-        }}
-      </LivePreviewWrapper>
+      {isLivePreview ? <PageLivePreview page={pageWithLayout} /> : <BlockRenderer blocks={layout} />}
       {isDraft && <PreviewBanner currentPath="/" />}
     </main>
   )

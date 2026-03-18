@@ -38,7 +38,10 @@ describe('generateLivePreviewUrl', () => {
       data: { slug: 'about' },
       collectionConfig: { slug: 'pages' },
     })
-    expect(url).toBe('/about')
+    expect(url).toContain('/preview?')
+    expect(url).toContain('collection=pages')
+    expect(url).toContain('slug=about')
+    expect(url).toContain('path=%2Fabout%3FlivePreview%3Dtrue')
   })
 
   it('generates root URL for home page', () => {
@@ -46,7 +49,7 @@ describe('generateLivePreviewUrl', () => {
       data: { slug: 'home' },
       collectionConfig: { slug: 'pages' },
     })
-    expect(url).toBe('/')
+    expect(url).toContain('path=%2F%3FlivePreview%3Dtrue')
   })
 
   it('generates correct URL for services', () => {
@@ -54,7 +57,7 @@ describe('generateLivePreviewUrl', () => {
       data: { slug: 'plumbing' },
       collectionConfig: { slug: 'services' },
     })
-    expect(url).toBe('/services/plumbing')
+    expect(url).toContain('path=%2Fservices%2Fplumbing%3FlivePreview%3Dtrue')
   })
 
   it('generates correct URL for posts', () => {
@@ -62,7 +65,7 @@ describe('generateLivePreviewUrl', () => {
       data: { slug: 'my-post' },
       collectionConfig: { slug: 'posts' },
     })
-    expect(url).toBe('/blog/my-post')
+    expect(url).toContain('path=%2Fblog%2Fmy-post%3FlivePreview%3Dtrue')
   })
 
   it('generates correct URL for service-areas', () => {
@@ -70,14 +73,15 @@ describe('generateLivePreviewUrl', () => {
       data: { slug: 'toronto' },
       collectionConfig: { slug: 'service-areas' },
     })
-    expect(url).toBe('/service-areas/toronto')
+    expect(url).toContain('path=%2Fservice-areas%2Ftoronto%3FlivePreview%3Dtrue')
   })
 
-  it('returns / for globals (no collectionConfig)', () => {
+  it('generates preview route for globals', () => {
     const url = generateLivePreviewUrl({
       data: {},
-      collectionConfig: undefined,
+      globalConfig: { slug: 'site-settings' },
     })
-    expect(url).toBe('/')
+    expect(url).toContain('global=site-settings')
+    expect(url).toContain('path=%2F%3FlivePreview%3Dtrue')
   })
 })

@@ -255,7 +255,7 @@ async function seed() {
     if (existing.totalDocs === 0) {
       const doc = await payload.create({
         collection: 'services',
-        data: { ...svc, slugLock: true, status: 'published' },
+        data: { ...svc, slugLock: true, _status: 'published' },
       })
       serviceIds[svc.slug] = doc.id as string
     } else {
@@ -368,7 +368,7 @@ async function seed() {
     if (existing.totalDocs === 0) {
       const doc = await payload.create({
         collection: 'service-areas',
-        data: { ...area, slugLock: true, status: 'published' },
+        data: { ...area, slugLock: true, _status: 'published' },
       })
       areaIds[area.slug] = doc.id as string
     } else {
@@ -438,7 +438,7 @@ async function seed() {
     if (existing.totalDocs === 0) {
       const doc = await payload.create({
         collection: 'reviews',
-        data: { ...review, status: 'published' },
+        data: { ...review, _status: 'published' },
       })
       reviewIds.push(doc.id as string)
     } else {
@@ -546,7 +546,7 @@ async function seed() {
     if (existing.totalDocs === 0) {
       await payload.create({
         collection: 'posts',
-        data: { ...post, slugLock: true, status: 'published' },
+        data: { ...post, slugLock: true, _status: 'published' },
       })
     }
   }
@@ -564,7 +564,7 @@ async function seed() {
   const homeData = {
         title: 'Home',
         slug: 'home',
-        status: 'published',
+        _status: 'published',
         layout: [
           {
             blockType: 'hero',
@@ -647,7 +647,7 @@ async function seed() {
   const aboutData = {
         title: 'About',
         slug: 'about',
-        status: 'published',
+        _status: 'published',
         layout: [
           {
             blockType: 'hero',

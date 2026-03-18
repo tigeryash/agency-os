@@ -31,8 +31,8 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     livePreview: {
-      url: ({ data, collectionConfig }) =>
-        generateLivePreviewUrl({ data, collectionConfig }),
+      url: ({ data, collectionConfig, globalConfig }) =>
+        generateLivePreviewUrl({ data, collectionConfig, globalConfig }),
       collections: ['pages', 'services', 'posts', 'service-areas'],
       globals: ['header', 'footer', 'site-settings'],
     },

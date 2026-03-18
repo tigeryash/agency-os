@@ -1,32 +1,33 @@
 import Link from 'next/link'
 import { Section, Container, Heading } from '@/components/ui'
-import { getPayloadClient, getPublishedWhere } from '@/lib/payload'
 import type { Block } from './BlockRenderer'
 
-export async function BlogPreviewBlock({ block }: { block: Block }) {
-  const { heading, count } = block as Block & {
+type BlogPreviewPost = {
+  id?: number | string
+  slug?: string | null
+  summary?: string | null
+  title?: string | null
+}
+
+export function BlogPreviewBlock({ block }: { block: Block }) {
+  const { heading, count, posts = [] } = block as Block & {
     heading?: string
     count?: number
+    posts?: BlogPreviewPost[]
   }
 
-  const payload = await getPayloadClient()
-  const { docs: posts } = await payload.find({
-    collection: 'posts',
-    where: getPublishedWhere(false),
-    sort: '-publishedAt',
-    limit: count ?? 3,
-  })
+  const visiblePosts = posts.slice(0, count ?? 3).filter((post) => post.slug)
 
-  if (posts.length === 0) return null
+  if (visiblePosts.length === 0) return null
 
   return (
     <Section>
       <Container>
         {heading && <Heading level={2} className="text-center mb-12">{heading}</Heading>}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {posts.map((post) => (
+          {visiblePosts.map((post) => (
             <Link
-              key={post.id}
+              key={post.id ?? post.slug}
               href={`/blog/${post.slug}`}
               className="block bg-surface-muted rounded-brand p-6 hover:shadow-md transition-shadow"
             >

@@ -1,4 +1,5 @@
 export { BlockRenderer } from './BlockRenderer'
+export type { Block } from './BlockRenderer'
 export { HeroBlock } from './HeroBlock'
 export { CtaBandBlock } from './CtaBandBlock'
 export { ServicesGridBlock } from './ServicesGridBlock'

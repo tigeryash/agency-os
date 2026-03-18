@@ -1,3 +1,6 @@
+import { appendLivePreviewParam } from '@/lib/livePreview'
+import { getPreviewSecret } from '@/lib/previewSecret'
+
 const collectionPathMap: Record<string, (slug: string) => string> = {
   pages: (slug) => (slug === 'home' ? '/' : `/${slug}`),
   services: (slug) => `/services/${slug}`,
@@ -19,7 +22,7 @@ export function generatePreviewUrl({
     slug,
     collection,
     path,
-    previewSecret: process.env.PREVIEW_SECRET || '',
+    previewSecret: getPreviewSecret() || '',
   })
 
   return `/preview?${params.toString()}`
@@ -28,12 +31,29 @@ export function generatePreviewUrl({
 export function generateLivePreviewUrl({
   data,
   collectionConfig,
+  globalConfig,
 }: {
   data: Record<string, unknown>
   collectionConfig?: { slug: string } | null
+  globalConfig?: { slug: string } | null
 }): string {
-  if (!collectionConfig) return '/'
+  const path = collectionConfig
+    ? (collectionPathMap[collectionConfig.slug]?.(data.slug as string) ?? '/')
+    : '/'
 
-  const pathFn = collectionPathMap[collectionConfig.slug]
-  return pathFn ? pathFn(data.slug as string) : '/'
+  const params = new URLSearchParams({
+    path: appendLivePreviewParam(path),
+    previewSecret: getPreviewSecret() || '',
+  })
+
+  if (collectionConfig) {
+    params.set('collection', collectionConfig.slug)
+    params.set('slug', String(data.slug ?? ''))
+  }
+
+  if (globalConfig) {
+    params.set('global', globalConfig.slug)
+  }
+
+  return `/preview?${params.toString()}`
 }
