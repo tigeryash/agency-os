@@ -12,7 +12,7 @@ export async function BlogPreviewBlock({ block }: { block: Block }) {
   const payload = await getPayloadClient()
   const { docs: posts } = await payload.find({
     collection: 'posts',
-    where: getPublishedWhere(),
+    where: getPublishedWhere(false),
     sort: '-publishedAt',
     limit: count ?? 3,
   })
