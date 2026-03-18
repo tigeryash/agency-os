@@ -35,7 +35,7 @@ test.describe('Preview routes', () => {
   })
 
   test('exit preview route redirects to path', async ({ page }) => {
-    const response = await page.goto('/preview/exit?path=/services')
+    await page.goto('/preview/exit?path=/services')
     // Should redirect to /services
     expect(page.url()).toContain('/services')
   })
